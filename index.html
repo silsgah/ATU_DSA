@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>BCP 201 | Data Structures & Algorithms</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* custom utility */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* header / hero */
+    .hero {
+      background: linear-gradient(135deg, #0b1120 0%, #111827 100%);
+      color: white;
+      padding: 3rem 0 4rem;
+      border-bottom: 4px solid #3b82f6;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .subhead {
+      font-size: 1.3rem;
+      color: #cbd5e6;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      border-top: 1px solid #1e293b;
+      padding-top: 1.2rem;
+    }
+
+    .badge {
+      background: #1e293b;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+    }
+
+    /* section styling */
+    section {
+      padding: 3rem 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #0f172a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.03), 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      border: 1px solid #eef2ff;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #b9d0f8;
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 span {
+      background: #eef2ff;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      color: #1e40af;
+    }
+
+    .complexity {
+      font-family: monospace;
+      background: #f1f5f9;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .list-styled {
+      list-style: none;
+      padding: 0;
+    }
+
+    .list-styled li {
+      margin-bottom: 0.6rem;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .list-styled li::before {
+      content: "▹";
+      position: absolute;
+      left: 0;
+      color: #3b82f6;
+    }
+
+    .big-o-table {
+      background: #f1f5f9;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .big-o-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .big-o-item {
+      background: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 40px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+    }
+
+    footer {
+      background: #0f172a;
+      color: #cbd5e6;
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.85rem;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      margin-top: 0.8rem;
+      background: transparent;
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-weight: 500;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    @media (max-width: 680px) {
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="container">
+      <h1>📘 BCP 201 — Data Structures & Algorithms</h1>
+      <div class="subhead">Principles of Data Abstraction · Algorithm Design · Complexity Analysis</div>
+      <div class="meta">
+        <span>🏛️ Department of Computer Science · Undergraduate Program</span>
+        <span>📅 Academic Year 2024–2025</span>
+        <span>🎓 Credits: 3 Units</span>
+        <span>⚙️ Prerequisite: Introduction to Programming</span>
+      </div>
+      <div class="badge">✨ Hands-on implementation · Abstract Data Types · Performance-driven</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Course description + objectives -->
+    <section>
+      <h2 class="section-title">📖 Course description</h2>
+      <p style="font-size:1.1rem; margin-bottom:1.5rem;"><strong>BCP 201</strong> expands students' programming skills and provides deep understanding of: <strong>data abstraction & ADTs</strong>, algorithm design (greedy, divide & conquer, dynamic programming, randomized, backtracking), runtime & memory analysis, and implementation of generic collections using high-level languages.</p>
+      <div class="two-columns">
+        <div class="card">
+          <h3>🎯 Course objectives</h3>
+          <ul class="list-styled">
+            <li>Understand concepts of data structures and abstract data types</li>
+            <li>Apply algorithm analysis to determine runtime & memory usage</li>
+            <li>Use design techniques: greedy, divide-and-conquer, DP, randomized, backtracking</li>
+            <li>Implement generic collections: linked lists, stacks, queues</li>
+            <li>Write and reason about recursive methods</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>📚 Mode of delivery & assessment</h3>
+          <ul class="list-styled">
+            <li><strong>📖 Classroom lectures</strong> — concept clarity & worked examples</li>
+            <li><strong>🏠 Take-home assignments</strong> — algorithmic thinking & implementation</li>
+            <li><strong>💻 Practical implementation</strong> — coding ADTs in high-level language</li>
+          </ul>
+          <div style="margin-top:1rem;">
+            <span class="badge" style="background:#eef2ff; color:#0f172a;">✔️ Final project · problem-solving focus</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Course content overview (units) -->
+    <section>
+      <h2 class="section-title">🗂️ Course content overview</h2>
+      <div class="card-grid">
+        <div class="card"><h3>01 · Intro to Data Structures</h3><p>Organizing & storing data efficiently, classification: linear (arrays, linked lists) & non-linear (trees, graphs), static vs dynamic.</p></div>
+        <div class="card"><h3>02 · Abstract Data Types (ADTs)</h3><p>Mathematical model by behavior: List, Stack, Queue, Map, Set, Tree, Graph. Interface vs implementation – modularity & abstraction.</p></div>
+        <div class="card"><h3>03 · Algorithms & Complexity</h3><p>Big-O classes, analysis of runtime/memory. Design paradigms: greedy, divide & conquer, DP, randomized, backtracking.</p></div>
+        <div class="card"><h3>04 · Lists</h3><p>ArrayList (contiguous) vs Singly/Doubly Linked Lists. Operations, tradeoffs, cache friendliness, dynamic sizing.</p></div>
+        <div class="card"><h3>05 · Stacks & Queues</h3><p>LIFO / FIFO. push/pop, enqueue/dequeue. Applications: function calls, scheduling, BFS, undo/redo.</p></div>
+        <div class="card"><h3>06 · Recursion</h3><p>Base case + recursive case. Factorial, Fibonacci, Tower of Hanoi, tree traversals, merge sort.</p></div>
+        <div class="card"><h3>07 · Searching & Hashing</h3><p>Linear O(n), Binary O(log n), Hashing O(1) average, collision handling (chaining, probing). Dictionaries & caches.</p></div>
+        <div class="card"><h3>08 · Trees</h3><p>Binary Trees, BST, AVL, traversals (inorder, pre, post). Balanced trees, heaps, tries.</p></div>
+        <div class="card"><h3>09 · Graphs</h3><p>Vertices, edges, directed/undirected, weighted. BFS, DFS, Dijkstra, Topological sort, MST (Kruskal/Prim).</p></div>
+      </div>
+    </section>
+
+    <!-- Big-O + algorithm techniques special block -->
+    <section>
+      <h2 class="section-title">⚡ Complexity & algorithm design</h2>
+      <div class="two-columns">
+        <div class="card">
+          <h3>📈 Big-O complexity classes</h3>
+          <div class="big-o-grid">
+            <div class="big-o-item">O(1) Constant</div>
+            <div class="big-o-item">O(log n) Logarithmic</div>
+            <div class="big-o-item">O(n) Linear</div>
+            <div class="big-o-item">O(n log n) Linearithmic</div>
+            <div class="big-o-item">O(n²) Quadratic</div>
+            <div class="big-o-item">O(2ⁿ) Exponential</div>
+          </div>
+          <p style="margin-top: 1rem;">⏱️ Analyze worst-case / average-case, space complexity matters.</p>
+        </div>
+        <div class="card">
+          <h3>🧠 Algorithm design techniques</h3>
+          <ul class="list-styled">
+            <li><strong>Greedy</strong> – locally optimal (Dijkstra, Huffman)</li>
+            <li><strong>Divide & Conquer</strong> – split & merge (Merge Sort, Quick Sort)</li>
+            <li><strong>Dynamic Programming</strong> – memoize subproblems (Fibonacci, Knapsack)</li>
+            <li><strong>Randomized</strong> – improve average performance (Quicksort random pivot)</li>
+            <li><strong>Backtracking</strong> – explore & prune (N-Queens, Sudoku)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADTs & Common structures deep dive -->
+    <section>
+      <h2 class="section-title">📌 Abstract Data Types & classic structures</h2>
+      <div class="two-columns">
+        <div class="card">
+          <h3>📋 List ADT</h3>
+          <p><strong>ArrayList</strong>: O(1) access, O(n) insert/delete middle.<br>
+          <strong>Singly Linked List</strong>: O(1) insert at head, O(n) search.<br>
+          <strong>Doubly Linked List</strong>: next/prev pointers, efficient at both ends.</p>
+        </div>
+        <div class="card">
+          <h3>🥞 Stack & Queue (ADT)</h3>
+          <p><strong>Stack (LIFO)</strong>: push, pop, peek — recursion, undo/redo.<br>
+          <strong>Queue (FIFO)</strong>: enqueue, dequeue — scheduling, BFS, print queue.</p>
+        </div>
+        <div class="card">
+          <h3>🌳 Trees & Hashing</h3>
+          <p>Binary Search Tree (O(h)), AVL self-balancing (O(log n)), Hash Table (average O(1)) — collision: chaining / open addressing.</p>
+        </div>
+        <div class="card">
+          <h3>🕸️ Graph algorithms</h3>
+          <p>BFS (queue), DFS (stack/recursion), Dijkstra (shortest path), MST (Prim/Kruskal), topological sort for DAGs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recursion highlight + examples -->
+    <section>
+      <h2 class="section-title">🔄 Recursion in depth</h2>
+      <div class="two-columns">
+        <div class="card">
+          <h3>📌 Base & recursive case</h3>
+          <pre style="background:#f1f5f9; padding:1rem; border-radius:12px; overflow-x:auto; font-size:0.85rem;">def factorial(n):
+    if n == 0:          # base case
+        return 1
+    return n * factorial(n-1)  # recursive case</pre>
+          <p>Every recursive function <strong>must</strong> have a base case to avoid infinite loops.</p>
+        </div>
+        <div class="card">
+          <h3>🧩 Classic recursion examples</h3>
+          <ul class="list-styled">
+            <li>Factorial & Fibonacci</li>
+            <li>Tower of Hanoi</li>
+            <li>Binary Search (recursive)</li>
+            <li>Tree traversals (inorder, preorder)</li>
+            <li>Merge Sort & Quick Sort</li>
+          </ul>
+          <a href="#" class="btn-outline" style="pointer-events:none;">📖 Visualize recursion</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- searching & hashing specific -->
+    <section>
+      <h2 class="section-title">🔍 Searching & Hashing</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Linear search <span class="complexity">O(n)</span></h3><p>Works on unsorted data, iterate through each element.</p></div>
+        <div class="card"><h3>Binary search <span class="complexity">O(log n)</span></h3><p>Requires sorted array, divide in half repeatedly.</p></div>
+        <div class="card"><h3>Interpolation search <span class="complexity">O(log log n)</span></h3><p>Estimate position based on value distribution, for uniformly distributed data.</p></div>
+        <div class="card"><h3>Hashing <span class="complexity">O(1) avg</span></h3><p>Hash function → index. Collision resolution: chaining (linked lists) or open addressing (linear probing). Load factor = n/m.</p></div>
+      </div>
+    </section>
+
+    <!-- recommended books + materials -->
+    <section>
+      <h2 class="section-title">📚 Recommended reading materials</h2>
+      <div class="card-grid">
+        <div class="card"><h3>📘 Malik, D.S. (2018)</h3><p><em>C++ Programming: Program Design Including Data Structures</em> – Cengage Learning</p></div>
+        <div class="card"><h3>📗 Bae, S. (2019)</h3><p><em>JavaScript Data Structures and Algorithms</em> – Apress</p></div>
+        <div class="card"><h3>📙 Canning, Broder & Lafore (2022)</h3><p><em>Data Structures and Algorithms in Python</em> – Addison-Wesley</p></div>
+        <div class="card"><h3>📕 Mail, T. (2021)</h3><p><em>Introduction to Computational Thinking</em> – Apress</p></div>
+        <div class="card"><h3>📔 Mehlhorn, K. (2013)</h3><p><em>Data Structures and Algorithms 1: Sorting and Searching</em> – Springer</p></div>
+      </div>
+    </section>
+
+    <!-- final call to action + summary -->
+    <section style="border-bottom: none;">
+      <div style="background: linear-gradient(120deg, #eef2ff, #ffffff); border-radius: 2rem; padding: 2rem; text-align: center;">
+        <h2 style="font-size: 2rem; font-weight: 700;">⚡ Ready to Build Efficient Code?</h2>
+        <p style="font-size: 1.2rem; margin: 1rem 0;">Arrays · Linked Lists · Stacks · Queues · Trees · Graphs · Hashing · Recursion · Big-O</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1rem 0;">
+          <span class="badge" style="background:#2563eb; color:white;">Design patterns</span>
+          <span class="badge" style="background:#2563eb; color:white;">Performance analysis</span>
+          <span class="badge" style="background:#2563eb; color:white;">ADT implementation</span>
+        </div>
+        <p style="margin-top: 1rem;"><strong>BCP 201 — Data Structures & Algorithms</strong> <br> Let's write algorithms that make a difference.</p>
+        <p style="font-size:0.85rem; margin-top:1rem;">🏛️ Department of Computer Science | Undergraduate Program</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© BCP 201 — Academic Year 2024–2025 · Principles of Data Abstraction & Algorithm Engineering</p>
+      <p style="margin-top: 0.5rem;">✍️ Hands-on coding · Complexity-driven development · Problem solving mindset</p>
+    </div>
+  </footer>
+</body>
+</html>
