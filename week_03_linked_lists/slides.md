@@ -41,3 +41,5 @@ Unlike Arrays (one contiguous block of memory), Linked Lists are scattered objec
 - Place a SLOW pointer pointing to `next`.
 - Place a FAST pointer pointing to `next.next`.
 - If a cycle exists, the fast pointer will eventually traverse the loop and "lap" the slow pointer from behind. If they collide, there's a loop!
+
+
