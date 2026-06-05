@@ -1,0 +1,29 @@
+# OS X files
+.DS_Store
+
+# LaTeX compilation auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# PDF files
+*.pdf
+assessments/*.pdf
+
+# Exam question banks & marking schemes (Strict ignore)
+assessments/dsa_mcq_bank.tex
+assessments/dsa_mcq_bank_b.tex
+assessments/dsa_mcq_marking_scheme.tex
+assessments/dsa_mcq_marking_scheme_b.tex
+assessments/dsa_mcq_bank_student.tex
+assessments/dsa_mcq_bank_b_student.tex
+assessments/dsa_mcq_bank_detailed_scheme.tex
+assessments/dsa_mcq_bank_b_detailed_scheme.tex
+
+# Python cache
+__pycache__/
+*.py[cod]
