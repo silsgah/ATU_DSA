@@ -1,0 +1,221 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Page geometry
+\geometry{margin=1in}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.96,0.96,0.96}
+\definecolor{primary}{rgb}{0.12, 0.29, 0.49}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=magenta,      
+    urlcolor=primary,
+    pdftitle={DSA Assignment 1 - Accra Technical University},
+}
+
+% Code listing settings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolor},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{primary}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\begin{center}
+    \includegraphics[width=2.2cm]{logo.png} \\
+    \vspace{0.25cm}
+    {\large \textbf{ACCRA TECHNICAL UNIVERSITY, GHANA}} \\
+    \vspace{0.15cm}
+    {\large \textbf{FACULTY OF APPLIED SCIENCES}} \\
+    \vspace{0.15cm}
+    {\large \textbf{DEPARTMENT OF COMPUTER SCIENCE}} \\
+    \vspace{0.15cm}
+    {\large \textbf{BTECH COMPUTER SCIENCE - YEAR II}} \\
+    \vspace{0.15cm}
+    {\large \textbf{COURSEWORK ASSIGNMENT 1}} \\
+    \vspace{0.3cm}
+    {\Large \textbf{BCP 210: DATA STRUCTURES AND ALGORITHMS I}} \\
+    \vspace{0.15cm}
+    {\large \textbf{ACADEMIC YEAR: 2025/2026}} \\
+    \vspace{0.4cm}
+    \hrule
+\end{center}
+
+\vspace{0.2cm}
+\noindent
+\textbf{STUDENT NAME:} \underline{\hspace{6cm}} \hfill \textbf{INDEX NUMBER:} \underline{\hspace{4cm}}
+\vspace{0.4cm}
+\hrule
+\vspace{0.4cm}
+
+\noindent
+\textbf{INSTRUCTIONS TO STUDENTS:} \\
+\begin{enumerate}
+    \item Answer ALL questions.
+    \item Implement all algorithms in Python (version 3.8 or above).
+    \item \textbf{GitHub Submission Steps:}
+    \begin{enumerate}
+        \item Go to the starter repository: \url{https://github.com/atu-dsa-2025/dsa-assignment-1-template}
+        \item Click the green \textbf{"Use this template"} button $\rightarrow$ select \textbf{"Create a new repository"}.
+        \item Set the repository visibility to \textbf{Private} and name it \texttt{dsa-assignment-1-INDEXNUMBER}.
+        \item Work on your solutions locally, commit, and push your python files (\texttt{.py}) and report (\texttt{.pdf}) to your repository.
+        \item \textbf{Submit by Transferring Ownership:} When finished, go to your repository's \textbf{Settings} $\rightarrow$ scroll to the bottom \textbf{Danger Zone} $\rightarrow$ click \textbf{Transfer ownership} $\rightarrow$ and transfer it to the class organization: \textbf{atu-dsa-2025}.
+    \end{enumerate}
+    \item \textbf{Submission Verification:} Your submission date is verified strictly by the **GitHub server push timestamp**. Local commit timestamps will not be accepted as proof of on-time submission.
+    \item \textbf{Late Policy:} Submissions pushed after the deadline will incur a 10\% penalty per 24-hour delay.
+\end{enumerate}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.5cm}
+
+% =========================================================
+% ASSIGNMENT 1: ARRAYS
+% =========================================================
+\section{Assignment 1: Arrays (45 Marks)}
+\subsection*{Topic: University Course Registration Analytics}
+
+\subsubsection*{Background}
+Accra Technical University stores student registrations for a specific course in a Python list representing the sequence of entries as they arrive.
+\begin{lstlisting}[language=Python]
+registrations = [
+    1023, 1050, 1023, 1102,
+    1050, 1023, 1201, 1102,
+    1300, 1023
+]
+\end{lstlisting}
+Each integer in the list represents a unique Student ID.
+
+\subsubsection*{Problem Statement}
+Write a Python program that implements efficient algorithms to perform the following operations:
+\begin{enumerate}
+    \item \textbf{Most Frequent Registrant (8 Marks):} Find the student ID that appears the most times in the registration list.
+    \item \textbf{Ordered Deduplication (10 Marks):} Remove all duplicate student IDs from the list while preserving the exact order of their first appearance.
+    \item \textbf{First Unique Student (9 Marks):} Identify the first student ID in the registration list that appears exactly once.
+    \item \textbf{Contiguous Subarray Sum (10 Marks):} Determine whether there exists a contiguous subarray of registrations whose sum equals a given target value $T$ (e.g., check if a sequence of IDs sum to a target).
+    \item \textbf{Complexity Analysis (8 Marks):} Analyze and state the worst-case time and space complexities for each of your four solutions using Big-O notation.
+\end{enumerate}
+
+\subsubsection*{Expected Output Format}
+Your script should print the results in the following format:
+\begin{lstlisting}[backgroundcolor=\color{black!5!white}]
+Most frequent student: 1023
+Unique registrations: [1023, 1050, 1102, 1201, 1300]
+First non-repeated student: 1201
+Subarray with target sum exists: True
+\end{lstlisting}
+
+\newpage
+
+% =========================================================
+% ASSIGNMENT 2: LINKED LISTS
+% =========================================================
+\section{Assignment 2: Linked Lists (45 Marks)}
+\subsection*{Topic: University Helpdesk Ticket Queue}
+
+\subsubsection*{Background}
+The university IT helpdesk maintains support tickets in the order they arrive. To support dynamic additions and updates without the memory overhead of contiguous array shifts, the department wants to use a Singly Linked List. A ticket node contains:
+\begin{itemize}
+    \item \texttt{ticket\_id} (Integer)
+    \item \texttt{student\_name} (String)
+    \item \texttt{issue} (String)
+\end{itemize}
+
+\subsubsection*{Problem Statement}
+Implement a singly linked list class (\texttt{TicketQueue}) from scratch that supports the following operations:
+\begin{enumerate}
+    \item \textbf{Enqueue Ticket (8 Marks):} Add a new ticket to the end of the queue.
+    \item \textbf{Priority Insert (10 Marks):} Insert a new priority ticket immediately after a specified ticket ID.
+    \item \textbf{Resolve Ticket (9 Marks):} Delete a resolved ticket from the queue given its ticket ID.
+    \item \textbf{Find Middle Ticket (8 Marks):} Find the middle ticket of the queue in a single traversal pass (using the fast/slow pointer method).
+    \item \textbf{Reverse Queue (10 Marks):} Reverse the queue in-place (manipulating pointers without copying data).
+    \item \textbf{Display Queue (4 Marks):} Traversal method to print all ticket IDs and details.
+    \item \textbf{Complexity Analysis (6 Marks):} State the worst-case time complexity of each operation.
+\end{enumerate}
+
+\subsubsection*{Starter Classes}
+Use the following starter code to begin your implementation:
+\begin{lstlisting}[language=Python]
+class Ticket:
+    def __init__(self, ticket_id, student_name, issue):
+        self.ticket_id = ticket_id
+        self.student_name = student_name
+        self.issue = issue
+        self.next = None
+
+class TicketQueue:
+    def __init__(self):
+        self.head = None
+\end{lstlisting}
+
+\vspace{0.4cm}
+% =========================================================
+% BONUS CHALLENGE
+% =========================================================
+\section{Bonus Challenge (10 Marks)}
+The university IT department currently stores tickets in a singly linked list. If the helpdesk workload shifts such that they perform thousands of searches per day but only a few insertions and deletions, would a Python list (contiguous array) be more appropriate? Justify your answer thoroughly, referencing:
+\begin{itemize}
+    \item Big-O time complexity of search operations.
+    \item CPU cache locality and hardware memory access patterns.
+    \item Memory allocation overhead (contiguous arrays vs. node pointer chasing).
+\end{itemize}
+
+\newpage
+
+% =========================================================
+% MARKING SCHEME
+% =========================================================
+\section{Marking Scheme}
+The assignment is graded out of 100 marks. The grade distribution is defined as follows:
+
+\begin{table}[h]
+    \centering
+    \caption{Coursework Assignment 1 Grade Rubric}
+    \vspace{0.2cm}
+    \begin{tabular}{lp{10cm}r}
+        \toprule
+        \textbf{Component} & \textbf{Description} & \textbf{Marks} \\
+        \midrule
+        \textbf{Correct Implementation} & Algorithms produce correct outputs under standard conditions. & 40 \\
+        \textbf{Edge Case Handling} & Handles empty lists, single elements, unfound elements, and large inputs gracefully without crashing. & 20 \\
+        \textbf{Complexity Analysis} & Clear explanation of runtime and spatial scaling bounds using Big-O notation. & 15 \\
+        \textbf{Code Quality} & Structured modular code, descriptive variable names, and helpful inline comments. & 15 \\
+        \textbf{Testing} & Robust test cases verifying boundary values and typical lists. & 10 \\
+        \midrule
+        \textbf{Total} & & \textbf{100} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{document}

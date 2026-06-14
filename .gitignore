@@ -23,6 +23,15 @@ assessments/dsa_mcq_bank_student.tex
 assessments/dsa_mcq_bank_b_student.tex
 assessments/dsa_mcq_bank_detailed_scheme.tex
 assessments/dsa_mcq_bank_b_detailed_scheme.tex
+assessments/dsa_assignment_1_marking_scheme.tex
+assessments/dsa_assignment_1_marking_scheme.pdf
+assessments/logo.png
+assessments/dsa_book_chapters_questions.md
+assessments/dsa_textbook.tex
+generate_textbook.py
+setup_assignment_repos.py
+pull_submissions.py
+assessments/starter_template/
 
 # Python cache
 __pycache__/

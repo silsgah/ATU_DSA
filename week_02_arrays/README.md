@@ -31,6 +31,9 @@ One of the most essential patterns for arrays. Often, an algorithmic problem tha
 
 ## Practical Assignment (`practice.py`)
 
-This week, you will:
-1. Implement the core functionality of a Dynamic Array from scratch to expose how resizing works dynamically under the hood.
-2. Solve standard competitive-programming problems using the Two Pointers pattern.
+This week, you will complete the following 5 exercises:
+1. **Dynamic Array Basics**: Implement the core functionality of a dynamic array from scratch using raw static arrays, including dynamic resizing (doubling capacity).
+2. **Dynamic Array Deletion & Insertion**: Implement index-based element shifting (`insert`) and dynamic memory reclamation (`pop`, which shrinks the capacity to avoid wasting memory when elements are deleted).
+3. **Two Sum II (Sorted Array)**: Find two numbers in a sorted array that sum to a target in O(N) time and O(1) space using two pointers.
+4. **Valid Palindrome**: Determine if a string is a palindrome after stripping non-alphanumeric characters, in O(N) time and O(1) space using two pointers.
+5. **Container With Most Water**: Find two vertical lines that enclose the maximum water area in O(N) time and O(1) space using two pointers.

@@ -110,6 +110,10 @@ def add_code_block(slide, x, y, w, h, code, size=14):
     tb = slide.shapes.add_textbox(x + Inches(0.15), y + Inches(0.1),
                                   w - Inches(0.25), h - Inches(0.2))
     tf = tb.text_frame; tf.word_wrap = True
+    tf.margin_left = Inches(0.05)
+    tf.margin_right = Inches(0.05)
+    tf.margin_top = Inches(0.05)
+    tf.margin_bottom = Inches(0.05)
     for i, ln in enumerate(code.split("\n")):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.alignment = PP_ALIGN.LEFT; p.line_spacing = 1.15
@@ -170,12 +174,11 @@ def slide_outline(n, total):
     add_header(s, "Lecture Outline",
                "The foundation of modern networks", n, total)
     items = [
-        ("1. Introduction to Graphs.  ", "From Trees to free-form networks."),
-        ("2. Real-World Graph Applications.  ", "Social networks, Maps, and the Web."),
-        ("3. Graph Terminology.  ", "Vertices, Edges, Directed vs Undirected, Cycles."),
-        ("4. Representing Graphs in Code.  ", "Adjacency Lists vs Adjacency Matrices."),
-        ("5. Breadth-First Search (BFS).  ", "Exploring level by level to find shortest paths."),
-        ("6. Depth-First Search (DFS).  ", "Plunging deep to map connectivity and cycles.")
+        ("1. What is a Graph?  ", "From Trees to free-form networks."),
+        ("2. Graph Terminology.  ", "Vertices, Edges, Directed vs Undirected, Cycles."),
+        ("3. Representing Graphs in Code.  ", "Adjacency Lists vs Adjacency Matrices."),
+        ("4. Breadth-First Search (BFS).  ", "Concept, pseudocode, and execution tracing."),
+        ("5. Depth-First Search (DFS).  ", "Concept, recursion, and call stack simulation.")
     ]
     add_bullets(s, Inches(0.9), Inches(1.5), Inches(12), Inches(5.5),
                 items, size=18, line_spacing=1.32)
@@ -269,42 +272,30 @@ def slide_representation(n, total):
     )
     add_code_block(s, Inches(7.1), Inches(3.5), Inches(5.1), Inches(2.0), code_mat, size=14)
 
-def slide_bfs(n, total):
+def slide_bfs_concept(n, total):
     s = prs.slides.add_slide(BLANK)
-    add_header(s, "4. Breadth-First Search (BFS)",
-               "Expanding like a ripple in a pond", n, total)
-               
-    add_text(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(2.5),
-             "Breadth-First Search explores all immediate neighbors first, before moving to neighbors of neighbors.\n\n"
-             "Key Characteristics:\n"
-             "• Data Structure: Uses a Queue (FIFO).\n"
-             "• Unweighted Shortest Path: BFS is guaranteed to find the shortest path from start to target in an unweighted graph.\n"
-             "• Must track 'Visited' nodes to prevent infinite loops.",
-             size=15, color=DARK_GREY)
-             
-    code = (
-        "from collections import deque\n\n"
-        "def bfs(graph, start):\n"
-        "    visited = set([start])\n"
-        "    q = deque([start])\n\n"
-        "    while q:\n"
-        "        node = q.popleft()\n"
-        "        print(node)\n"
-        "        for neighbor in graph[node]:\n"
-        "            if neighbor not in visited:\n"
-        "                visited.add(neighbor)\n"
-        "                q.append(neighbor)"
-    )
-    add_code_block(s, Inches(0.9), Inches(4.0), Inches(6.0), Inches(2.5), code, size=12)
+    add_header(s, "4. Breadth-First Search (BFS): Concept",
+               "Exploring level by level like a ripple in a pond", n, total)
     
-    # Visual
+    items = [
+        ("The Level-Order Approach: ", "BFS starts at a source node and visits all of its direct neighbors first (Level 1), then all of their neighbors (Level 2), and so on."),
+        ("FIFO Queue Mechanism: ", "It uses a Queue to keep track of nodes to explore next. First In, First Out ensures we explore closer nodes before further ones."),
+        ("Shortest Path Guarantee: ", "In an unweighted graph, the first time BFS reaches a node, it has found the shortest path (minimum edge count) to that node."),
+        ("Visited Set: ", "Crucial to keep track of visited vertices to avoid infinite loops and re-processing nodes in cyclic graphs."),
+        ("Complexity: ", "Time: O(V + E) as every vertex is visited and every edge is checked. Space: O(V) for the queue and visited set.")
+    ]
+    add_bullets(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(5.0), items, size=15, line_spacing=1.2)
+    
+    # Right: Visual Graph with levels
     add_rect(s, Inches(7.5), Inches(1.5), Inches(5.0), Inches(5.0), LIGHT_GREY)
+    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "BFS Layer Traversal Visual", size=16, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+    
     pos = {
-        'A': (Inches(10.0), Inches(2.5)),
-        'B': (Inches(8.5), Inches(4.0)),
-        'C': (Inches(11.5), Inches(4.0)),
-        'D': (Inches(8.5), Inches(5.5)),
-        'E': (Inches(11.5), Inches(5.5))
+        'A': (Inches(10.0), Inches(2.3)),   # Source (Level 0)
+        'B': (Inches(8.5), Inches(3.6)),    # Level 1
+        'C': (Inches(11.5), Inches(3.6)),   # Level 1
+        'D': (Inches(8.5), Inches(5.1)),    # Level 2
+        'E': (Inches(11.5), Inches(5.1))    # Level 2
     }
     edges = [('A','B'), ('A','C'), ('B','D'), ('C','E')]
     
@@ -313,43 +304,89 @@ def slide_bfs(n, total):
         draw_edge(s, x1, y1, x2, y2, color=TEAL, weight=2)
         
     for label, (cx, cy) in pos.items():
-        draw_node(s, cx, cy, label)
+        col = GOLD if label == 'A' else (TEAL if label in ['B', 'C'] else WHITE)
+        draw_node(s, cx, cy, label, color=col)
         
-    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "Order: A -> B, C -> D, E", size=16, bold=True, color=RED, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(7.5), Inches(5.8), Inches(5.0), Inches(0.6),
+             "Level 0 (Gold)  ➔  Level 1 (Teal)  ➔  Level 2 (White)",
+             size=13, bold=True, color=DARK_GREY, align=PP_ALIGN.CENTER)
 
-def slide_dfs(n, total):
+def slide_bfs_code(n, total):
     s = prs.slides.add_slide(BLANK)
-    add_header(s, "5. Depth-First Search (DFS)",
-               "Plunging deep until hitting a dead end", n, total)
+    add_header(s, "4. Breadth-First Search (BFS): Code & Trace",
+               "Implementing and executing the BFS algorithm", n, total)
                
-    add_text(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(2.5),
-             "Depth-First Search picks a path and follows it as deeply as possible before backtracking.\n\n"
-             "Key Characteristics:\n"
-             "• Data Structure: Uses a Stack (LIFO) or Recursion (Call Stack).\n"
-             "• Ideal for: Cycle detection, Path finding (e.g. maze solving), Topological sorting.\n"
-             "• Can yield wildly different paths compared to BFS.",
-             size=15, color=DARK_GREY)
-             
+    # Left: Code Block
     code = (
-        "def dfs(graph, node, visited=None):\n"
-        "    if visited is None:\n"
-        "        visited = set()\n\n"
-        "    if node not in visited:\n"
-        "        visited.add(node)\n"
-        "        print(node)\n"
+        "from collections import deque\n\n"
+        "def bfs(graph, start):\n"
+        "    visited = {start}\n"
+        "    q = deque([start])\n\n"
+        "    while q:\n"
+        "        node = q.popleft()\n"
+        "        print(node)  # Process node\n\n"
         "        for neighbor in graph[node]:\n"
-        "            dfs(graph, neighbor, visited)"
+        "            if neighbor not in visited:\n"
+        "                visited.add(neighbor)\n"
+        "                q.append(neighbor)"
     )
-    add_code_block(s, Inches(0.9), Inches(4.0), Inches(6.0), Inches(2.5), code, size=13)
+    add_code_block(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(5.0), code, size=13)
     
-    # Visual
+    # Right: Dry-Run / Trace Table
     add_rect(s, Inches(7.5), Inches(1.5), Inches(5.0), Inches(5.0), LIGHT_GREY)
+    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "Step-by-Step Execution Trace", size=16, bold=True, color=RED, align=PP_ALIGN.CENTER)
+    
+    add_text(s, Inches(7.7), Inches(2.2), Inches(4.6), Inches(0.6),
+             "Graph: A-B, A-C, B-D, C-E (Start at 'A')", size=13, bold=True, color=DARK_GREY)
+             
+    # Table headers
+    add_rect(s, Inches(7.7), Inches(2.9), Inches(4.6), Inches(0.4), NAVY)
+    add_text(s, Inches(7.7), Inches(2.95), Inches(1.0), Inches(0.3), "Pop Node", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(8.7), Inches(2.95), Inches(1.8), Inches(0.3), "Queue Status", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(10.5), Inches(2.95), Inches(1.8), Inches(0.3), "Visited Set", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    
+    # Rows
+    trace_data = [
+        ("Initial", "['A']", "{'A'}"),
+        ("A", "['B', 'C']", "{'A', 'B', 'C'}"),
+        ("B", "['C', 'D']", "{'A', 'B', 'C', 'D'}"),
+        ("C", "['D', 'E']", "{'A', 'B', 'C', 'D', 'E'}"),
+        ("D", "['E']", "{'A', 'B', 'C', 'D', 'E'}"),
+        ("E", "[]", "{'A', 'B', 'C', 'D', 'E'}")
+    ]
+    
+    for idx, (pop, q_state, vis) in enumerate(trace_data):
+        y_offset = Inches(3.4 + idx * 0.45)
+        bg_col = WHITE if idx % 2 == 0 else LIGHT_GREY
+        add_rect(s, Inches(7.7), y_offset, Inches(4.6), Inches(0.4), bg_col, line=DARK_GREY)
+        add_text(s, Inches(7.7), y_offset + Inches(0.05), Inches(1.0), Inches(0.3), pop, size=11, bold=True, color=DARK_GREY, align=PP_ALIGN.CENTER)
+        add_text(s, Inches(8.7), y_offset + Inches(0.05), Inches(1.8), Inches(0.3), q_state, size=11, color=DARK_GREY, align=PP_ALIGN.CENTER)
+        add_text(s, Inches(10.5), y_offset + Inches(0.05), Inches(1.8), Inches(0.3), vis, size=11, color=DARK_GREY, align=PP_ALIGN.CENTER)
+
+def slide_dfs_concept(n, total):
+    s = prs.slides.add_slide(BLANK)
+    add_header(s, "5. Depth-First Search (DFS): Concept",
+               "Plunging deep down a path until hitting a dead end", n, total)
+               
+    items = [
+        ("The Depth-First Approach: ", "DFS starts at a source node and follows a branch as far as possible before backtracking. It prioritizes depth over breadth."),
+        ("LIFO Stack / Recursion: ", "DFS uses a Stack structure. This is naturally implemented via Recursion (the Call Stack), but can also be done iteratively with a custom Stack."),
+        ("Cycle Detection: ", "Excellent for detecting cycles (loops) in graphs by tracking the path of the current recursive call."),
+        ("Topological Sorting: ", "Crucial for ordering tasks with dependencies (e.g. build systems, class prerequisites) using finish times."),
+        ("Complexity: ", "Time: O(V + E) as every vertex is visited and every edge is checked. Space: O(V) for the recursion call stack in the worst case.")
+    ]
+    add_bullets(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(5.0), items, size=15, line_spacing=1.2)
+    
+    # Right: Visual Graph with levels
+    add_rect(s, Inches(7.5), Inches(1.5), Inches(5.0), Inches(5.0), LIGHT_GREY)
+    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "DFS Traversal Order Visual", size=16, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+    
     pos = {
-        'A': (Inches(10.0), Inches(2.5)),
-        'B': (Inches(8.5), Inches(4.0)),
-        'C': (Inches(11.5), Inches(4.0)),
-        'D': (Inches(8.5), Inches(5.5)),
-        'E': (Inches(11.5), Inches(5.5))
+        'A': (Inches(10.0), Inches(2.3)),
+        'B': (Inches(8.5), Inches(3.6)),
+        'C': (Inches(11.5), Inches(3.6)),
+        'D': (Inches(8.5), Inches(5.1)),
+        'E': (Inches(11.5), Inches(5.1))
     }
     edges = [('A','B'), ('B','D'), ('A','C'), ('C','E')]
     
@@ -357,10 +394,66 @@ def slide_dfs(n, total):
         x1, y1 = pos[u]; x2, y2 = pos[v]
         draw_edge(s, x1, y1, x2, y2, color=GOLD, weight=2)
         
+    order = ['A', 'B', 'D', 'C', 'E']
     for label, (cx, cy) in pos.items():
-        draw_node(s, cx, cy, label)
+        col = PURPLE if label == 'A' else (GOLD if label in ['B', 'D'] else WHITE)
+        draw_node(s, cx, cy, label, color=col)
         
-    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "Order: A -> B -> D -> C -> E", size=16, bold=True, color=PURPLE, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(7.5), Inches(5.8), Inches(5.0), Inches(0.6),
+             "First Branch (Purple ➔ Gold)  ➔  Second Branch (White)",
+             size=13, bold=True, color=DARK_GREY, align=PP_ALIGN.CENTER)
+
+def slide_dfs_code(n, total):
+    s = prs.slides.add_slide(BLANK)
+    add_header(s, "5. Depth-First Search (DFS): Code & Trace",
+               "Implementing and executing the recursive DFS", n, total)
+               
+    # Left: Code Block
+    code = (
+        "def dfs(graph, node, visited=None):\n"
+        "    if visited is None:\n"
+        "        visited = set()\n\n"
+        "    if node not in visited:\n"
+        "        visited.add(node)\n"
+        "        print(node)  # Process node\n\n"
+        "        for neighbor in graph[node]:\n"
+        "            if neighbor not in visited:\n"
+        "                dfs(graph, neighbor, visited)\n"
+        "    return visited"
+    )
+    add_code_block(s, Inches(0.9), Inches(1.5), Inches(6.0), Inches(5.0), code, size=13)
+    
+    # Right: Call Stack Simulation
+    add_rect(s, Inches(7.5), Inches(1.5), Inches(5.0), Inches(5.0), LIGHT_GREY)
+    add_text(s, Inches(7.5), Inches(1.6), Inches(5.0), Inches(0.5), "Recursion Call Stack Trace", size=16, bold=True, color=PURPLE, align=PP_ALIGN.CENTER)
+    
+    add_text(s, Inches(7.7), Inches(2.2), Inches(4.6), Inches(0.6),
+             "Graph: A-B, B-D, A-C, C-E (Start at 'A')", size=13, bold=True, color=DARK_GREY)
+             
+    # Table headers
+    add_rect(s, Inches(7.7), Inches(2.9), Inches(4.6), Inches(0.4), NAVY)
+    add_text(s, Inches(7.7), Inches(2.95), Inches(1.0), Inches(0.3), "Action", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(8.7), Inches(2.95), Inches(1.8), Inches(0.3), "Call Stack", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(10.5), Inches(2.95), Inches(1.8), Inches(0.3), "Visited Set", size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    
+    # Rows
+    trace_data = [
+        ("Call dfs(A)", "[dfs(A)]", "{'A'}"),
+        ("Call dfs(B)", "[dfs(A), dfs(B)]", "{'A', 'B'}"),
+        ("Call dfs(D)", "[dfs(A), dfs(B), dfs(D)]", "{'A', 'B', 'D'}"),
+        ("Pop dfs(D)", "[dfs(A), dfs(B)]", "{'A', 'B', 'D'}"),
+        ("Pop dfs(B)", "[dfs(A)]", "{'A', 'B', 'D'}"),
+        ("Call dfs(C)", "[dfs(A), dfs(C)]", "{'A', 'B', 'D', 'C'}"),
+        ("Call dfs(E)", "[dfs(A), dfs(C), dfs(E)]", "{'A', 'B', 'D', 'C', 'E'}")
+    ]
+    
+    for idx, (action, stack_state, vis) in enumerate(trace_data):
+        y_offset = Inches(3.4 + idx * 0.45)
+        bg_col = WHITE if idx % 2 == 0 else LIGHT_GREY
+        add_rect(s, Inches(7.7), y_offset, Inches(4.6), Inches(0.4), bg_col, line=DARK_GREY)
+        add_text(s, Inches(7.7), y_offset + Inches(0.05), Inches(1.0), Inches(0.3), action, size=11, bold=True, color=DARK_GREY, align=PP_ALIGN.CENTER)
+        add_text(s, Inches(8.7), y_offset + Inches(0.05), Inches(1.8), Inches(0.3), stack_state, size=11, color=DARK_GREY, align=PP_ALIGN.CENTER)
+        add_text(s, Inches(10.5), y_offset + Inches(0.05), Inches(1.8), Inches(0.3), vis, size=11, color=DARK_GREY, align=PP_ALIGN.CENTER)
 
 def slide_summary(n, total):
     s = prs.slides.add_slide(BLANK)
@@ -391,8 +484,10 @@ slides = [
     slide_intro,
     slide_terminology,
     slide_representation,
-    slide_bfs,
-    slide_dfs,
+    slide_bfs_concept,
+    slide_bfs_code,
+    slide_dfs_concept,
+    slide_dfs_code,
     slide_summary
 ]
 

@@ -571,9 +571,8 @@ def slide_trace(n, total):
         ("Step 1",  1, 2),   # slow→1, fast→2 (0-indexed)
         ("Step 2",  2, 4),
         ("Step 3",  3, 6),
-        ("Step 4",  4, 2),   # fast wraps: 7→3 so index 2
-        ("Step 5",  5, 4),
-        ("Step 6 ✓", 6, 6),  # collision at index 6 (node "7")
+        ("Step 4",  4, 3),   # fast wraps: 7→3→4 so index 3
+        ("Step 5 ✓", 5, 5),  # collision at index 5 (node "6")
     ]
 
     y_start = Inches(1.52)
@@ -644,9 +643,9 @@ def slide_proof(n, total):
 
     gap_rows = [
         ("Iter 0", 0, 3, "Gap = 3"),
-        ("Iter 1", 1, 4, "Gap = 2"),
-        ("Iter 2", 2, 5, "Gap = 1"),
-        ("Iter 3", 3, 6, "Gap = 0  ✓"),
+        ("Iter 1", 1, 5, "Gap = 2"),
+        ("Iter 2", 2, 1, "Gap = 1"),
+        ("Iter 3", 3, 3, "Gap = 0  ✓"),
     ]
     loop_labels = ["0", "1", "2", "3", "4", "5"]
     nw2 = Inches(0.6); nh2 = Inches(0.42); gp2 = Inches(0.1)
@@ -783,16 +782,18 @@ def slide_entry_point(n, total):
 
     # Right: why it works
     add_text(s, Inches(9.0), Inches(2.1), Inches(4.0), Inches(0.45),
-             "Why Phase 2 works", size=17, bold=True, color=NAVY)
+             "Why Phase 2 Works", size=17, bold=True, color=NAVY)
     why = [
-        "Let F = prefix length, L = cycle length.",
-        "At collision: slow has moved F + a steps; fast has moved F + a + kL steps (some integer k).",
-        "Reset slow to head. Both advance 1 step / iteration.",
-        "After F more steps, slow reaches entry. Fast (from collision point) also reaches entry — proven by modular arithmetic.",
-        "They meet exactly at the cycle entry. ∎",
+        ("Definitions:  ", "F = prefix length, L = loop length, a = distance to collision."),
+        ("At Collision:  ", "Slow moved F + a. Fast moved 2(F + a) steps."),
+        ("Loop Math:  ", "Fast is k full loops ahead: 2(F + a) = F + a + k*L  =>  F + a = k*L."),
+        ("Express F:  ", "F = k*L - a."),
+        ("Phase 2:  ", "Reset slow. Both move 1 step/iter. Slow takes F steps to reach entry."),
+        ("Fast Position:  ", "Starting at a, Fast moves F steps: a + F = a + (k*L - a) = k*L."),
+        ("Meeting Point:  ", "Since k*L is a multiple of L, Fast is also exactly at the entry node! ∎"),
     ]
     add_bullets(s, Inches(9.0), Inches(2.65), Inches(4.1), Inches(3.5),
-                why, size=13, line_spacing=1.35, bullet_color=TEAL)
+                why, size=11, line_spacing=1.25, bullet_color=TEAL)
 
     callout_box(s, Inches(9.0), Inches(6.2), Inches(4.1), Inches(0.9),
                 "LeetCode 142",

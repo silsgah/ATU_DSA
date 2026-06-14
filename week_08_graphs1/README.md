@@ -36,5 +36,8 @@ A 2D Array / Grid of size $V \times V$ where a `1` at `matrix[i][j]` means an ed
 *(Note: Because graphs can be cyclic, you must ALWAYS maintain a `visited` Set to avoid infinite loops).*
 
 ## Practical Assignment (`practice.py`)
-1. Build a recursive DFS to count how many distinct "islands" exist in a grid.
-2. Build an iterative BFS to find the shortest exit route in a maze.
+1. **Build Adjacency List**: Convert an edge list (pairs of connections) into an adjacency list dictionary.
+2. **Basic BFS Traversal Order**: Traverse and output the list of nodes visited in level-order.
+3. **Basic DFS Traversal Order**: Traverse and output the list of nodes visited in depth-first order using recursion.
+4. **Shortest Path Distance (BFS)**: Find the minimum path distance (number of edges) between two nodes in an unweighted graph.
+5. **Number of Islands (DFS)**: Traverse an implicit 2D grid graph to count isolated components/islands.

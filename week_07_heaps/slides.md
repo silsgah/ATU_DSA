@@ -44,3 +44,22 @@ For an element at index `i`:
 Finding the "K-th largest element" out of 100 Billion records.
 Sorting takes $O(N \log N)$ and massive memory.
 Using a Min-Heap capped at size $K$ takes only $O(N \log K)$ and uses minimal RAM.
+
+---
+
+# 5. Floyd's Linear Time Heap Construction
+Building a heap from an array bottom-up (calling `siftDown` from bottom-most parent to root) runs in $O(N)$ time:
+- A complete binary tree of size $N$ has at most $\lceil N/2^{h+1} \rceil$ nodes at height $h$.
+- The work per node is proportional to its height $h$:
+  $$T(N) \le \sum_{h=0}^{\lfloor \log N \rfloor} h \frac{N}{2^{h+1}} \le \frac{N}{2} \sum_{h=0}^{\infty} \frac{h}{2^h} = O(N)$$
+- This is strictly faster than insertion-based top-down heap construction ($O(N \log N)$).
+
+---
+
+# 6. d-Ary Heaps
+In a $d$-ary heap, each node has $d$ children instead of 2.
+- Represents a flat 1-indexed array.
+- For a node at index $i$, the parent and $j$-th child ($1 \le j \le d$) are mapped at:
+  $$\text{Parent}(i) = \lfloor \frac{i - 2}{d} \rfloor + 1$$
+  $$\text{Child}(i, j) = d \cdot (i - 1) + j + 1$$
+- Decreasing key takes $O(\log_d N)$ operations (fewer levels), while deleting min/max takes $O(d \log_d N)$ due to finding the smallest child out of $d$ children.

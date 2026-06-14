@@ -658,6 +658,112 @@ def slide_queue_circular_array(n, total):
                 notes, size=13, line_spacing=1.35, bullet_color=TEAL)
 
 
+def slide_queue_circular_trace(n, total):
+    s = prs.slides.add_slide(BLANK)
+    add_header(s, "Circular Buffer: Step-by-Step Pointer Trace",
+               "Visualizing Front and Rear pointer wrapping with a capacity of 4", n, total)
+
+    phases = [
+        (
+            "1. Initial State", 
+            ["A", "B", "C", "D"], 
+            0, 
+            3, 
+            [
+                ("Full Queue. ", "All 4 slots are occupied."),
+                ("Front points to A ", "at index 0."),
+                ("Rear points to D ", "at index 3."),
+            ]
+        ),
+        (
+            "2. Dequeue A & B", 
+            ["", "", "C", "D"], 
+            2, 
+            3, 
+            [
+                ("No shifting. ", "We do not shift elements."),
+                ("Front moves ", "from 0 to 1, then to 2."),
+                ("Empty space ", "created at slots 0 & 1."),
+            ]
+        ),
+        (
+            "3. Enqueue E (Wrap)", 
+            ["E", "", "C", "D"], 
+            2, 
+            0, 
+            [
+                ("Space Reused. ", "We place E at index 0."),
+                ("Rear wraps: ", "(3 + 1) % 4 = 0."),
+                ("Queue is now ", "divided across boundaries."),
+            ]
+        ),
+        (
+            "4. Dequeue C & D", 
+            ["E", "", "", ""], 
+            0, 
+            0, 
+            [
+                ("Front wraps. ", "C at 2, then D at 3 are removed."),
+                ("Modulo wrapping: ", "(3 + 1) % 4 = 0."),
+                ("Front = Rear = 0 ", "pointing to E."),
+            ]
+        ),
+    ]
+
+    for col_idx, (title, cells, front_idx, rear_idx, desc) in enumerate(phases):
+        X_col = Inches(0.9 + col_idx * 2.95)
+        Y_col = Inches(1.5)
+        W_col = Inches(2.7)
+        H_col = Inches(5.1)
+        
+        # Panel Background
+        add_rrect(s, X_col, Y_col, W_col, H_col, LIGHT_GREY)
+        
+        # Panel Header
+        add_text(s, X_col, Y_col + Inches(0.15), W_col, Inches(0.45), title, size=15, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+        
+        # Draw 4 Cells
+        Y_cells = Y_col + Inches(0.7)
+        for i in range(4):
+            cell_X = X_col + Inches(0.375) + i * Inches(0.5)
+            
+            # Highlight/Color Logic
+            if i == front_idx and i == rear_idx:
+                fill = PURPLE
+                text_color = WHITE
+            elif i == front_idx:
+                fill = TEAL
+                text_color = WHITE
+            elif i == rear_idx:
+                fill = GOLD
+                text_color = WHITE
+            elif cells[i] == "":
+                fill = WHITE
+                text_color = DARK_GREY
+            else:
+                fill = WHITE
+                text_color = DARK_GREY
+                
+            # Draw Cell Box
+            add_rect(s, cell_X, Y_cells, Inches(0.45), Inches(0.45), fill, line=DARK_GREY, line_width=1)
+            
+            # Cell Value
+            val_str = cells[i] if cells[i] != "" else " "
+            add_text(s, cell_X, Y_cells + Inches(0.08), Inches(0.45), Inches(0.35), val_str, size=14, bold=True, color=text_color, align=PP_ALIGN.CENTER)
+            
+            # Index under the Cell
+            add_text(s, cell_X, Y_cells + Inches(0.48), Inches(0.45), Inches(0.25), str(i), size=9, color=DARK_GREY, align=PP_ALIGN.CENTER)
+            
+        # Draw Status
+        Y_status = Y_col + Inches(1.6)
+        status_text = f"front: index {front_idx}\nrear: index {rear_idx}"
+        add_text(s, X_col, Y_status, W_col, Inches(0.6), status_text, size=12, bold=True, color=DARK_GREY, align=PP_ALIGN.CENTER)
+        
+        # Draw Description
+        Y_desc = Y_col + Inches(2.25)
+        add_bullets(s, X_col + Inches(0.12), Y_desc, W_col - Inches(0.24), Inches(2.7), desc, size=11, line_spacing=1.2, bullet_color=TEAL)
+
+
 def slide_deque(n, total):
     s = prs.slides.add_slide(BLANK)
     add_header(s, "6.  Double-Ended Queue (Deque)",
@@ -870,6 +976,7 @@ content_slides = [
     slide_queue_ops,
     slide_queue_linked_list,
     slide_queue_circular_array,
+    slide_queue_circular_trace,
     slide_deque,
     slide_applications,
     slide_practice,

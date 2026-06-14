@@ -14,10 +14,16 @@ def print_first_element(arr):
 # Time Complexity: O(N^2) - Nested loop over the same array length N.
 # Space Complexity: O(1) - Prints immediately, does not store pairs.
 def print_all_pairs(arr):
-    for i in arr:
-        for j in arr:
-            print(i, j)
-
+    for i in arr: # 1, 2, 3, 4, 5, ... N
+        for j in arr: # 1, 2, 3, 4, 5, ... N
+            print(i, j) # 1,1,1,2 1,3 1,4 1,5, ...N  2,1 2,2 2,3 ... N 3,1 3,2 3,3 ... N N,N
+    # 1 1 1,1 1,2, 1,3, 1,4, ...N
+    # 2 1 2,2
+    # 3 1 3,2 ...N
+    # 4 1 4,2 ...N
+    # 5 ...
+    # ...
+    # N N
 
 # 1c.
 # Time Complexity: O(N) - Loop runs N/2 times -> O(N). Second loop runs 100 times (constant, dropped).
@@ -32,8 +38,8 @@ def tricky_loop(arr):
 # Exercise 2: Code Optimization
 
 def bad_has_duplicates(arr):
-    for i in range(len(arr)):
-        for j in range(len(arr)):
+    for i in range(len(arr)):   # N iterations
+        for j in range(len(arr)):   # N iterations N squared
             if i != j and arr[i] == arr[j]:
                 return True
     return False
@@ -54,11 +60,10 @@ def optimized_has_duplicates(arr):
 
 # Exercise 3: Profiling script
 def time_execution():
-    test_array = [i for i in range(10000)]
-    test_array.append(5000) # One duplicate
+    test_array = [i for i in range(1000)]
+    test_array.append(500) # One duplicate
 
     print("Starting profiling ...")
-    
     start_time = time.time()
     bad_has_duplicates(test_array)
     end_time = time.time()
