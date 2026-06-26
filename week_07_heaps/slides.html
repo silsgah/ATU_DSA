@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 7: Heaps &amp; Priority Queues — Data Structures &amp; Algorithms</title>
+  <meta name="description" content="University lecture slides for Week 7 covering Binary Heaps, Priority Queues, Sift operations, Array representation, and the K-th Largest Element problem." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --bg-card: #161b22;
+      --bg-card2: #1c2230;
+      --accent-blue: #58a6ff;
+      --accent-teal: #39d0c4;
+      --accent-amber: #f0a53a;
+      --accent-rose: #f47067;
+      --accent-green: #56d364;
+      --text-primary: #e6edf3;
+      --text-muted: #8b949e;
+      --border: rgba(88,166,255,.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 80px;
+    }
+    #deck { width: 100%; max-width: 1100px; }
+    .slide {
+      display: none;
+      width: 100%;
+      min-height: 660px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 52px 60px 72px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeSlide .35s ease;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    }
+    .slide.active { display: block; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,166,255,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .slide-num { position: absolute; top: 20px; right: 28px; font-size: 0.72rem; color: var(--text-muted); letter-spacing: .06em; }
+    .slide-label { font-size: 0.68rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-blue); margin-bottom: 10px; }
+    h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.15; margin-bottom: 12px; }
+    h2 { font-size: 1.65rem; font-weight: 700; line-height: 1.2; margin-bottom: 18px; }
+    h3 { font-size: 1.05rem; font-weight: 600; color: var(--accent-teal); margin-bottom: 8px; }
+    p  { font-size: 0.97rem; line-height: 1.72; }
+    ul, ol { padding-left: 1.3em; }
+    li { font-size: 0.95rem; line-height: 1.72; margin-bottom: 6px; }
+    strong { color: var(--accent-blue); }
+    em { color: var(--accent-amber); font-style: normal; font-weight: 500; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 16px; }
+    .card { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+    .card.accent-blue  { border-color: rgba(88,166,255,.4); }
+    .card.accent-teal  { border-color: rgba(57,208,196,.4); }
+    .card.accent-amber { border-color: rgba(240,165,58,.4); }
+    .card.accent-rose  { border-color: rgba(244,112,103,.4); }
+    .card.accent-green { border-color: rgba(86,211,100,.4); }
+    .pill { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: .05em; border-radius: 20px; padding: 3px 12px; margin-right: 6px; margin-bottom: 6px; }
+    .pill-blue  { background: rgba(88,166,255,.15);  color: var(--accent-blue);  border: 1px solid rgba(88,166,255,.35); }
+    .pill-teal  { background: rgba(57,208,196,.15);  color: var(--accent-teal);  border: 1px solid rgba(57,208,196,.35); }
+    .pill-amber { background: rgba(240,165,58,.15);  color: var(--accent-amber); border: 1px solid rgba(240,165,58,.35); }
+    .pill-rose  { background: rgba(244,112,103,.15); color: var(--accent-rose);  border: 1px solid rgba(244,112,103,.35); }
+    .pill-green { background: rgba(86,211,100,.15);  color: var(--accent-green); border: 1px solid rgba(86,211,100,.35); }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.18); border-radius: 5px; padding: 2px 7px; color: var(--accent-teal); }
+    pre { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.65; background: #010409; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; overflow-x: auto; color: #cdd9e5; white-space: pre; }
+    .formula { background: rgba(57,208,196,.07); border: 1px solid rgba(57,208,196,.3); border-radius: 10px; padding: 14px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-teal); margin: 10px 0; line-height: 1.8; }
+    .array-viz { display: flex; gap: 4px; align-items: flex-start; flex-wrap: wrap; margin-top: 12px; }
+    .arr-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .arr-val { width: 42px; height: 42px; border-radius: 8px; background: rgba(88,166,255,.12); border: 1.5px solid rgba(88,166,255,.35); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 600; color: var(--accent-blue); }
+    .arr-val.root   { background: rgba(57,208,196,.18); border-color: var(--accent-teal); color: var(--accent-teal); }
+    .arr-val.hl     { background: rgba(240,165,58,.18);  border-color: var(--accent-amber); color: var(--accent-amber); }
+    .arr-idx { font-size: 0.62rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+    .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num { min-width: 28px; height: 28px; border-radius: 50%; background: rgba(88,166,255,.15); border: 1px solid var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: var(--accent-blue); flex-shrink: 0; margin-top: 2px; }
+    .step-body { font-size: 0.9rem; line-height: 1.65; }
+    .bigo { display: inline-block; background: rgba(240,165,58,.12); border: 1px solid rgba(240,165,58,.4); color: var(--accent-amber); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; border-radius: 6px; padding: 2px 10px; margin-left: 4px; }
+    .callout { border-radius: 10px; padding: 14px 18px; font-size: 0.9rem; line-height: 1.65; margin-top: 12px; }
+    .callout-blue  { background: rgba(88,166,255,.08);  border-left: 3px solid var(--accent-blue); }
+    .callout-teal  { background: rgba(57,208,196,.08);  border-left: 3px solid var(--accent-teal); }
+    .callout-amber { background: rgba(240,165,58,.08);  border-left: 3px solid var(--accent-amber); }
+    .callout-rose  { background: rgba(244,112,103,.08); border-left: 3px solid var(--accent-rose); }
+    .callout-green { background: rgba(86,211,100,.08);  border-left: 3px solid var(--accent-green); }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.88rem; }
+    th { background: rgba(88,166,255,.12); color: var(--accent-blue); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    /* Cover */
+    .week-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.3); border-radius: 24px; padding: 6px 18px; font-size: 0.78rem; font-weight: 600; color: var(--accent-blue); letter-spacing: .06em; margin-bottom: 26px; }
+    .glow-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-teal), transparent); border-radius: 0 0 18px 18px; }
+    /* Agenda */
+    .agenda-list { list-style: none; padding: 0; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .agenda-list li { display: flex; align-items: center; gap: 14px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; font-size: 0.95rem; }
+    .agenda-num { min-width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal)); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    /* Nav */
+    #deck-controls { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; background: rgba(22,27,34,.92); border: 1px solid var(--border); border-radius: 40px; padding: 10px 24px; backdrop-filter: blur(12px); z-index: 100; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+    #deck-controls button { background: none; border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px; padding: 6px 18px; cursor: pointer; font-size: 0.85rem; font-family: inherit; transition: background .2s, border-color .2s; }
+    #deck-controls button:hover { background: rgba(88,166,255,.12); border-color: var(--accent-blue); }
+    #deck-controls button:disabled { opacity: .3; cursor: default; }
+    #slide-counter { color: var(--text-muted); font-size: 0.82rem; min-width: 60px; text-align: center; }
+    .tree-svg { width: 100%; max-width: 340px; display: block; }
+    @media (max-width: 720px) { .slide { padding: 28px 18px 64px; } .two-col { grid-template-columns: 1fr; } h1 { font-size: 1.9rem; } h2 { font-size: 1.3rem; } }
+  </style>
+</head>
+<body>
+<div id="deck">
+
+  <!-- SLIDE 1 : COVER -->
+  <div class="slide active">
+    <span class="slide-num">1 / 12</span>
+    <div class="week-chip">&#128197; Week 7 &middot; Data Structures &amp; Algorithms</div>
+    <h1>Heaps &amp; Priority Queues</h1>
+    <p style="font-size:1.0rem;color:var(--text-muted);margin-top:10px;max-width:540px;line-height:1.7;">
+      Efficiently retrieving the minimum or maximum element &mdash;
+      from the core heap property to real-world scheduling algorithms.
+    </p>
+    <div style="margin-top:30px;">
+      <span class="pill pill-blue">Binary Heap</span>
+      <span class="pill pill-teal">Min-Heap / Max-Heap</span>
+      <span class="pill pill-amber">Priority Queue</span>
+      <span class="pill pill-rose">Sift Operations</span>
+      <span class="pill pill-green">K-th Largest Element</span>
+    </div>
+    <p style="position:absolute;bottom:28px;left:60px;font-size:0.75rem;color:var(--text-muted);">ATU &middot; Computer Science &middot; 2024&ndash;2025</p>
+    <div class="glow-bar"></div>
+  </div>
+
+  <!-- SLIDE 2 : AGENDA -->
+  <div class="slide">
+    <span class="slide-num">2 / 12</span>
+    <div class="slide-label">Overview</div>
+    <h2>What We Cover This Week</h2>
+    <ul class="agenda-list">
+      <li><span class="agenda-num">1</span> What is a Binary Heap?</li>
+      <li><span class="agenda-num">2</span> The Heap Property &mdash; Min-Heap vs. Max-Heap</li>
+      <li><span class="agenda-num">3</span> Storing a Heap in a Plain Array</li>
+      <li><span class="agenda-num">4</span> Sift-Up Operation (Insertion)</li>
+      <li><span class="agenda-num">5</span> Sift-Down Operation (Extraction)</li>
+      <li><span class="agenda-num">6</span> Priority Queues and Real-World Uses</li>
+      <li><span class="agenda-num">7</span> Python&rsquo;s heapq Module</li>
+      <li><span class="agenda-num">8</span> K-th Largest Element Problem</li>
+      <li><span class="agenda-num">9</span> Floyd&rsquo;s O(N) Heap Construction</li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 3 : WHAT IS A HEAP -->
+  <div class="slide">
+    <span class="slide-num">3 / 12</span>
+    <div class="slide-label">Concept</div>
+    <h2>What Is a Binary Heap?</h2>
+    <p>A <strong>Binary Heap</strong> is a special type of complete binary tree that is designed to answer one specific question very efficiently:</p>
+    <div class="callout callout-blue" style="margin-top:14px;font-size:1.05rem;font-weight:600;color:var(--accent-blue);">
+      &ldquo;What is the absolute largest (or smallest) element in this dataset?&rdquo;
+    </div>
+    <div class="two-col" style="margin-top:22px;">
+      <div>
+        <h3>Structural Requirements</h3>
+        <ul style="margin-top:8px;">
+          <li>It is a <strong>complete binary tree</strong>: every level is fully filled except possibly the last, which is filled from left to right.</li>
+          <li>It enforces a strict <em>ordering rule</em> between each parent and its children.</li>
+          <li>There is <strong>no guaranteed relationship between sibling nodes</strong> &mdash; unlike a Binary Search Tree.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Time Complexity Summary</h3>
+        <table>
+          <thead><tr><th>Operation</th><th>Time</th></tr></thead>
+          <tbody>
+            <tr><td>Peek minimum or maximum</td><td><span class="bigo">O(1)</span></td></tr>
+            <tr><td>Insert an element</td><td><span class="bigo">O(log N)</span></td></tr>
+            <tr><td>Remove minimum or maximum</td><td><span class="bigo">O(log N)</span></td></tr>
+            <tr><td>Build heap from N items (Floyd)</td><td><span class="bigo">O(N)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 : HEAP PROPERTY -->
+  <div class="slide">
+    <span class="slide-num">4 / 12</span>
+    <div class="slide-label">Core Rule</div>
+    <h2>The Heap Property</h2>
+    <div class="two-col">
+      <div class="card accent-teal">
+        <h3 style="color:var(--accent-teal);">Min-Heap</h3>
+        <p style="margin-top:8px;font-size:0.92rem;line-height:1.65;">
+          Every <strong style="color:var(--accent-teal);">parent</strong> node holds a value
+          <em>less than or equal to</em> both of its children.<br><br>
+          The <strong style="color:var(--accent-teal);">root</strong> is always the <em>smallest</em> element in the entire structure.
+        </p>
+        <svg class="tree-svg" viewBox="0 0 260 175" style="margin-top:12px;">
+          <line x1="130" y1="34" x2="70"  y2="92"  stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="130" y1="34" x2="190" y2="92"  stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="70"  y1="92" x2="38"  y2="148" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="70"  y1="92" x2="102" y2="148" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="190" y1="92" x2="158" y2="148" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="190" y1="92" x2="222" y2="148" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <circle cx="130" cy="32" r="22" fill="rgba(57,208,196,.2)" stroke="#39d0c4" stroke-width="2"/>
+          <text x="130" y="38" text-anchor="middle" fill="#39d0c4" font-size="14" font-weight="700" font-family="monospace">1</text>
+          <circle cx="70" cy="92" r="18" fill="rgba(57,208,196,.1)" stroke="#39d0c4" stroke-width="1.5"/>
+          <text x="70" y="98" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="monospace">3</text>
+          <circle cx="190" cy="92" r="18" fill="rgba(57,208,196,.1)" stroke="#39d0c4" stroke-width="1.5"/>
+          <text x="190" y="98" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="monospace">5</text>
+          <circle cx="38" cy="148" r="14" fill="rgba(57,208,196,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="38" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">9</text>
+          <circle cx="102" cy="148" r="14" fill="rgba(57,208,196,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="102" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">7</text>
+          <circle cx="158" cy="148" r="14" fill="rgba(57,208,196,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="158" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">6</text>
+          <circle cx="222" cy="148" r="14" fill="rgba(57,208,196,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="222" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">8</text>
+        </svg>
+      </div>
+      <div class="card accent-rose">
+        <h3 style="color:var(--accent-rose);">Max-Heap</h3>
+        <p style="margin-top:8px;font-size:0.92rem;line-height:1.65;">
+          Every <strong style="color:var(--accent-rose);">parent</strong> node holds a value
+          <em>greater than or equal to</em> both of its children.<br><br>
+          The <strong style="color:var(--accent-rose);">root</strong> is always the <em>largest</em> element in the entire structure.
+        </p>
+        <svg class="tree-svg" viewBox="0 0 260 175" style="margin-top:12px;">
+          <line x1="130" y1="34" x2="70"  y2="92"  stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="130" y1="34" x2="190" y2="92"  stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="70"  y1="92" x2="38"  y2="148" stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="70"  y1="92" x2="102" y2="148" stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="190" y1="92" x2="158" y2="148" stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="190" y1="92" x2="222" y2="148" stroke="#f47067" stroke-width="1.5" stroke-opacity=".5"/>
+          <circle cx="130" cy="32" r="22" fill="rgba(244,112,103,.2)" stroke="#f47067" stroke-width="2"/>
+          <text x="130" y="38" text-anchor="middle" fill="#f47067" font-size="14" font-weight="700" font-family="monospace">9</text>
+          <circle cx="70" cy="92" r="18" fill="rgba(244,112,103,.1)" stroke="#f47067" stroke-width="1.5"/>
+          <text x="70" y="98" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="monospace">7</text>
+          <circle cx="190" cy="92" r="18" fill="rgba(244,112,103,.1)" stroke="#f47067" stroke-width="1.5"/>
+          <text x="190" y="98" text-anchor="middle" fill="#e6edf3" font-size="13" font-family="monospace">5</text>
+          <circle cx="38" cy="148" r="14" fill="rgba(244,112,103,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="38" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">1</text>
+          <circle cx="102" cy="148" r="14" fill="rgba(244,112,103,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="102" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">3</text>
+          <circle cx="158" cy="148" r="14" fill="rgba(244,112,103,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="158" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">4</text>
+          <circle cx="222" cy="148" r="14" fill="rgba(244,112,103,.06)" stroke="#6e7681" stroke-width="1"/>
+          <text x="222" y="153" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">2</text>
+        </svg>
+      </div>
+    </div>
+    <div class="callout callout-amber" style="margin-top:14px;font-size:0.88rem;">
+      <strong>Key difference from Binary Search Trees:</strong>
+      In a heap, siblings have no defined ordering relative to each other. A left child is not necessarily smaller than a right child.
+    </div>
+  </div>
+
+  <!-- SLIDE 5 : ARRAY REPRESENTATION -->
+  <div class="slide">
+    <span class="slide-num">5 / 12</span>
+    <div class="slide-label">Implementation Detail</div>
+    <h2>Storing a Heap in an Array</h2>
+    <p>Because a heap is always a <strong>complete binary tree</strong>, its nodes have no gaps. We can store the entire tree level by level in a one-dimensional array &mdash; <em>no pointers or node objects are needed</em>.</p>
+    <div class="two-col" style="margin-top:18px;align-items:start;">
+      <div>
+        <h3>Index Arithmetic (0-indexed array)</h3>
+        <p style="font-size:0.87rem;color:var(--text-muted);margin-bottom:8px;">For any element at index <code>i</code>:</p>
+        <div class="formula">
+          Parent:       (i &minus; 1) // 2<br>
+          Left child:   2 &times; i + 1<br>
+          Right child:  2 &times; i + 2
+        </div>
+        <div class="callout callout-teal" style="margin-top:10px;font-size:0.87rem;">
+          These three formulas let us navigate the tree structure <em>without any pointers</em>. The root is always at index <strong>0</strong>.
+        </div>
+      </div>
+      <div>
+        <h3>Example: Min-Heap [1, 3, 5, 9, 7, 6, 8]</h3>
+        <svg viewBox="0 0 250 162" style="width:100%;max-width:250px;display:block;margin-bottom:12px;">
+          <line x1="125" y1="30" x2="68"  y2="86"  stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="125" y1="30" x2="182" y2="86"  stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="68"  y1="86" x2="38"  y2="140" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="68"  y1="86" x2="98"  y2="140" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="182" y1="86" x2="152" y2="140" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <line x1="182" y1="86" x2="212" y2="140" stroke="#39d0c4" stroke-width="1.5" stroke-opacity=".5"/>
+          <circle cx="125" cy="28" r="20" fill="rgba(57,208,196,.2)" stroke="#39d0c4" stroke-width="2"/>
+          <text x="125" y="34" text-anchor="middle" fill="#39d0c4" font-size="13" font-weight="700" font-family="monospace">1</text>
+          <text x="125" y="14" text-anchor="middle" fill="#6e7681" font-size="8" font-family="monospace">[0]</text>
+          <circle cx="68" cy="86" r="17" fill="rgba(88,166,255,.12)" stroke="#58a6ff" stroke-width="1.5"/>
+          <text x="68" y="92" text-anchor="middle" fill="#e6edf3" font-size="12" font-family="monospace">3</text>
+          <text x="68" y="72" text-anchor="middle" fill="#6e7681" font-size="8" font-family="monospace">[1]</text>
+          <circle cx="182" cy="86" r="17" fill="rgba(88,166,255,.12)" stroke="#58a6ff" stroke-width="1.5"/>
+          <text x="182" y="92" text-anchor="middle" fill="#e6edf3" font-size="12" font-family="monospace">5</text>
+          <text x="182" y="72" text-anchor="middle" fill="#6e7681" font-size="8" font-family="monospace">[2]</text>
+          <circle cx="38"  cy="140" r="13" fill="rgba(88,166,255,.07)" stroke="#6e7681" stroke-width="1"/>
+          <text x="38"  y="145" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">9</text>
+          <text x="38"  y="128" text-anchor="middle" fill="#6e7681" font-size="7" font-family="monospace">[3]</text>
+          <circle cx="98"  cy="140" r="13" fill="rgba(88,166,255,.07)" stroke="#6e7681" stroke-width="1"/>
+          <text x="98"  y="145" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">7</text>
+          <text x="98"  y="128" text-anchor="middle" fill="#6e7681" font-size="7" font-family="monospace">[4]</text>
+          <circle cx="152" cy="140" r="13" fill="rgba(88,166,255,.07)" stroke="#6e7681" stroke-width="1"/>
+          <text x="152" y="145" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">6</text>
+          <text x="152" y="128" text-anchor="middle" fill="#6e7681" font-size="7" font-family="monospace">[5]</text>
+          <circle cx="212" cy="140" r="13" fill="rgba(88,166,255,.07)" stroke="#6e7681" stroke-width="1"/>
+          <text x="212" y="145" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">8</text>
+          <text x="212" y="128" text-anchor="middle" fill="#6e7681" font-size="7" font-family="monospace">[6]</text>
+        </svg>
+        <div class="array-viz">
+          <div class="arr-cell"><div class="arr-val root">1</div><div class="arr-idx">[0]</div></div>
+          <div class="arr-cell"><div class="arr-val">3</div><div class="arr-idx">[1]</div></div>
+          <div class="arr-cell"><div class="arr-val">5</div><div class="arr-idx">[2]</div></div>
+          <div class="arr-cell"><div class="arr-val">9</div><div class="arr-idx">[3]</div></div>
+          <div class="arr-cell"><div class="arr-val">7</div><div class="arr-idx">[4]</div></div>
+          <div class="arr-cell"><div class="arr-val">6</div><div class="arr-idx">[5]</div></div>
+          <div class="arr-cell"><div class="arr-val">8</div><div class="arr-idx">[6]</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 : SIFT UP -->
+  <div class="slide">
+    <span class="slide-num">6 / 12</span>
+    <div class="slide-label">Core Operation</div>
+    <h2>Sift-Up &mdash; Restoring the Heap After Insertion</h2>
+    <p>When a new element is <strong>inserted</strong>, it is appended to the end of the array. It may be smaller than its parent, which would violate the heap property. Sift-Up corrects this by moving the element upward.</p>
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <h3>Algorithm Steps</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body">Append the new value to the end of the array.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body">Find its parent using index <code>(i &minus; 1) // 2</code>.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body">If the new element is <em>smaller than its parent</em> (for a Min-Heap), swap them.</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body">Repeat from the new position until the element is larger than its parent, or it reaches the root.</div></div>
+        </div>
+        <div class="callout callout-amber" style="margin-top:14px;">
+          In the worst case, the element travels from the bottom level to the root: at most <strong>log N</strong> swaps.<br>
+          Time complexity: <span class="bigo">O(log N)</span>
+        </div>
+      </div>
+      <div>
+        <h3>Python Code</h3>
+        <pre>def _sift_up(self, index):
+    # While we have a parent node AND
+    # the parent is larger than the current element:
+    while self.has_parent(index):
+        parent_i = self.get_parent_index(index)
+
+        if self.heap[parent_i] > self.heap[index]:
+            # Swap with the parent
+            self.heap[parent_i], self.heap[index] = (
+                self.heap[index], self.heap[parent_i]
+            )
+            index = parent_i   # move focus upward
+        else:
+            break  # heap property is satisfied</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 : SIFT DOWN -->
+  <div class="slide">
+    <span class="slide-num">7 / 12</span>
+    <div class="slide-label">Core Operation</div>
+    <h2>Sift-Down &mdash; Restoring the Heap After Extraction</h2>
+    <p>When the <strong>root is removed</strong> (the minimum in a Min-Heap), the last element in the array is placed at the root. It is likely too large and must sink down to its correct position.</p>
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <h3>Algorithm Steps</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body">Record the root value as the result. Move the last element to index <code>0</code>. Remove the last position.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body">Compare the element with its left and right children.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body">Identify the <em>smaller</em> of the two children (for a Min-Heap).</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body">If the element is <em>larger than the smaller child</em>, swap them.</div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body">Repeat until the element is smaller than both children, or it reaches a leaf node.</div></div>
+        </div>
+        <div class="callout callout-amber" style="margin-top:12px;">Time complexity: <span class="bigo">O(log N)</span></div>
+      </div>
+      <div>
+        <h3>Python Code</h3>
+        <pre>def _sift_down(self, index):
+    # Continue while there is at least a left child
+    while self.has_left_child(index):
+        left  = self.get_left_child_index(index)
+        right = self.get_right_child_index(index)
+
+        # Assume left child is the smaller candidate
+        smaller = left
+
+        # If right child exists and is smaller, use it
+        if (self.has_right_child(index) and
+                self.heap[right] < self.heap[left]):
+            smaller = right
+
+        # If current element is already smaller, stop
+        if self.heap[index] < self.heap[smaller]:
+            break
+
+        # Swap and continue downward
+        self.heap[index], self.heap[smaller] = (
+            self.heap[smaller], self.heap[index]
+        )
+        index = smaller</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 : INSERT & EXTRACT EXAMPLE -->
+  <div class="slide">
+    <span class="slide-num">8 / 12</span>
+    <div class="slide-label">Worked Example</div>
+    <h2>Insert and Extract &mdash; Step by Step</h2>
+    <div class="two-col" style="margin-top:12px;">
+      <div class="card accent-teal">
+        <h3>Inserting 2 into [1, 3, 5, 9, 7, 6, 8]</h3>
+        <div class="steps" style="margin-top:10px;">
+          <div class="step"><div class="step-num">1</div><div class="step-body">Append 2 at index 7 &rarr; <code>[1,3,5,9,7,6,8,<strong>2</strong>]</code></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body">Parent of 7 = index 3 (value 9). Since 2 &lt; 9, swap &rarr; <code>[1,3,5,<strong>2</strong>,7,6,8,<strong>9</strong>]</code></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body">Parent of 3 = index 1 (value 3). Since 2 &lt; 3, swap &rarr; <code>[1,<strong>2</strong>,5,<strong>3</strong>,7,6,8,9]</code></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body">Parent of 1 = index 0 (value 1). Since 2 &gt; 1, stop. &#x2713;</div></div>
+        </div>
+        <div class="array-viz" style="margin-top:10px;">
+          <div class="arr-cell"><div class="arr-val root">1</div><div class="arr-idx">[0]</div></div>
+          <div class="arr-cell"><div class="arr-val hl">2</div><div class="arr-idx">[1]</div></div>
+          <div class="arr-cell"><div class="arr-val">5</div><div class="arr-idx">[2]</div></div>
+          <div class="arr-cell"><div class="arr-val">3</div><div class="arr-idx">[3]</div></div>
+          <div class="arr-cell"><div class="arr-val">7</div><div class="arr-idx">[4]</div></div>
+          <div class="arr-cell"><div class="arr-val">6</div><div class="arr-idx">[5]</div></div>
+          <div class="arr-cell"><div class="arr-val">8</div><div class="arr-idx">[6]</div></div>
+          <div class="arr-cell"><div class="arr-val">9</div><div class="arr-idx">[7]</div></div>
+        </div>
+      </div>
+      <div class="card accent-rose">
+        <h3>Extracting the Minimum from [1, 3, 5, 9, 7, 6, 8]</h3>
+        <div class="steps" style="margin-top:10px;">
+          <div class="step"><div class="step-num">1</div><div class="step-body">Record root value: <strong>1</strong> (this is the result).</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body">Move last element (8) to root &rarr; <code>[<strong>8</strong>,3,5,9,7,6]</code></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body">Smaller child = 3 (left). 8 &gt; 3 &rarr; swap &rarr; <code>[3,<strong>8</strong>,5,9,7,6]</code></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body">Smaller child = 7 (right). 8 &gt; 7 &rarr; swap &rarr; <code>[3,7,5,9,<strong>8</strong>,6]</code></div></div>
+          <div class="step"><div class="step-num">5</div><div class="step-body">No more children. Min-Heap property restored. &#x2713;</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 : PRIORITY QUEUE -->
+  <div class="slide">
+    <span class="slide-num">9 / 12</span>
+    <div class="slide-label">Abstract Data Structure</div>
+    <h2>Priority Queues</h2>
+    <p>A <strong>Priority Queue</strong> is an abstract data structure: it defines a contract that elements leave in order of <em>priority</em>, not in order of arrival. A Binary Heap is the standard data structure used to implement it efficiently.</p>
+    <div class="two-col" style="margin-top:18px;align-items:start;">
+      <div>
+        <h3>Comparison: Regular Queue vs. Priority Queue</h3>
+        <table>
+          <thead><tr><th>Regular Queue (FIFO)</th><th>Priority Queue</th></tr></thead>
+          <tbody>
+            <tr><td>First inserted leaves first.</td><td>Highest priority leaves first.</td></tr>
+            <tr><td>No concept of importance.</td><td>Each element carries a priority.</td></tr>
+            <tr><td>Implemented with an array or linked list.</td><td>Implemented with a Binary Heap.</td></tr>
+            <tr><td>Dequeue: <span class="bigo">O(1)</span></td><td>Dequeue: <span class="bigo">O(log N)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>Real-World Applications</h3>
+        <div class="card accent-blue" style="margin-bottom:10px;">
+          <strong>Operating System Scheduling</strong>
+          <p style="font-size:0.86rem;margin-top:6px;color:var(--text-muted);">The CPU always runs the highest-priority process first. New high-priority processes can displace lower-priority ones.</p>
+        </div>
+        <div class="card accent-green" style="margin-bottom:10px;">
+          <strong>Network Packet Routing</strong>
+          <p style="font-size:0.86rem;margin-top:6px;color:var(--text-muted);">Routers use priority queues to forward urgent packets (e.g., voice calls, video streams) before bulk data.</p>
+        </div>
+        <div class="card accent-amber">
+          <strong>Dijkstra&rsquo;s Shortest Path Algorithm</strong>
+          <p style="font-size:0.86rem;margin-top:6px;color:var(--text-muted);">A Min-Heap always selects the nearest unvisited node first &mdash; fundamental to GPS navigation and routing software.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 : PYTHON HEAPQ -->
+  <div class="slide">
+    <span class="slide-num">10 / 12</span>
+    <div class="slide-label">Python Standard Library</div>
+    <h2>Python&rsquo;s <code>heapq</code> Module</h2>
+    <p>Python provides a built-in <code>heapq</code> module that implements a <strong>Min-Heap</strong> directly on top of a regular Python list. No separate class is required.</p>
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <h3>Core Functions</h3>
+        <table>
+          <thead><tr><th>Function</th><th>What it does</th><th>Time</th></tr></thead>
+          <tbody>
+            <tr><td><code>heappush(h, x)</code></td><td>Insert x and restore heap</td><td><span class="bigo">O(log N)</span></td></tr>
+            <tr><td><code>heappop(h)</code></td><td>Remove and return smallest</td><td><span class="bigo">O(log N)</span></td></tr>
+            <tr><td><code>heapify(h)</code></td><td>Convert list to heap in-place</td><td><span class="bigo">O(N)</span></td></tr>
+            <tr><td><code>h[0]</code></td><td>Read smallest without removing</td><td><span class="bigo">O(1)</span></td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-amber" style="margin-top:12px;font-size:0.87rem;">
+          <strong>Important:</strong> Python&rsquo;s <code>heapq</code> only provides a Min-Heap. To simulate a Max-Heap, insert the <em>negated</em> value and negate the result on extraction.
+        </div>
+      </div>
+      <div>
+        <h3>Usage Example</h3>
+        <pre>import heapq
+
+numbers = [5, 1, 9, 3, 2]
+
+# Build a Min-Heap in place — O(N)
+heapq.heapify(numbers)
+# numbers is now: [1, 2, 9, 3, 5]
+
+# Read the minimum without removing it
+minimum = numbers[0]   # -> 1
+
+# Remove and return the minimum — O(log N)
+val = heapq.heappop(numbers)   # -> 1
+
+# Insert a new element — O(log N)
+heapq.heappush(numbers, 4)
+
+# ---- Simulating a Max-Heap ----
+max_heap = []
+for x in [5, 1, 9]:
+    heapq.heappush(max_heap, -x)
+# Remove the largest element:
+largest = -heapq.heappop(max_heap)   # -> 9</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 : K-TH LARGEST -->
+  <div class="slide">
+    <span class="slide-num">11 / 12</span>
+    <div class="slide-label">Classic Problem</div>
+    <h2>Finding the K-th Largest Element</h2>
+    <div class="callout callout-blue" style="margin-bottom:14px;">
+      <strong>Problem:</strong> Given an unsorted list of N numbers, find the K-th largest element.<br>
+      <strong>Constraint:</strong> The solution must run in <span class="bigo">O(N log K)</span> time, <em>not</em> <span class="bigo">O(N log N)</span>.
+    </div>
+    <div class="two-col">
+      <div>
+        <h3>Why Not Just Sort?</h3>
+        <p style="font-size:0.9rem;line-height:1.65;">Sorting takes <span class="bigo">O(N log N)</span> and requires holding all N elements in memory. For very large datasets (hundreds of millions of records), this is too slow and uses too much memory.</p>
+        <h3 style="margin-top:14px;">Strategy Using a Min-Heap</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body">Maintain a <strong>Min-Heap capped at size K</strong>.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body">For each element in the list, push it onto the heap.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body">If the heap exceeds size K, remove the smallest element (the root).</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body">After all elements are processed, the root is the K-th largest overall.</div></div>
+        </div>
+        <div class="callout callout-green" style="margin-top:12px;font-size:0.88rem;">
+          At the end, the heap contains exactly the K largest elements seen. Its minimum (the root) is the K-th largest.
+        </div>
+      </div>
+      <div>
+        <h3>Python Solution</h3>
+        <pre>import heapq
+
+def find_kth_largest(nums: list, k: int) -> int:
+    min_heap = []
+
+    for num in nums:
+        heapq.heappush(min_heap, num)
+
+        # If heap grows past K, discard the smallest.
+        # This keeps only the K largest elements.
+        if len(min_heap) > k:
+            heapq.heappop(min_heap)
+
+    # The root is the K-th largest.
+    return min_heap[0]
+
+
+# Example
+nums = [3, 2, 1, 5, 6, 4]
+k = 2
+print(find_kth_largest(nums, k))   # -> 5</pre>
+        <div class="formula" style="margin-top:10px;">
+          Time:   O(N log K)<br>
+          Space:  O(K)  &mdash; heap holds at most K elements
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 : FLOYD'S CONSTRUCTION -->
+  <div class="slide">
+    <span class="slide-num">12 / 12</span>
+    <div class="slide-label">Advanced Topic</div>
+    <h2>Floyd&rsquo;s O(N) Heap Construction</h2>
+    <p>There are two approaches to building a valid heap from an unsorted array of N elements.</p>
+    <div class="two-col" style="margin-top:16px;align-items:start;">
+      <div class="card accent-rose">
+        <h3 style="color:var(--accent-rose);">Approach 1 &mdash; Insert One by One</h3>
+        <p style="font-size:0.9rem;margin-top:8px;line-height:1.65;">Call <code>push()</code> (which calls Sift-Up) N times &mdash; once per element.</p>
+        <div class="formula" style="margin-top:10px;">
+          Each insertion: O(log N)<br>
+          Total: <strong>O(N log N)</strong>
+        </div>
+        <div class="callout callout-rose" style="margin-top:10px;font-size:0.87rem;">This is the straightforward but slower approach.</div>
+      </div>
+      <div class="card accent-green">
+        <h3 style="color:var(--accent-green);">Approach 2 &mdash; Floyd&rsquo;s Bottom-Up Method</h3>
+        <p style="font-size:0.9rem;margin-top:8px;line-height:1.65;">
+          Start from the <strong>last non-leaf node</strong> (index <code>(N // 2) &minus; 1</code>) and apply Sift-Down to every node, moving upward toward the root.
+        </p>
+        <div class="formula" style="margin-top:10px;">
+          Total: <strong>O(N)</strong>  &larr; strictly faster
+        </div>
+        <pre style="margin-top:10px;font-size:0.77rem;">n = len(arr)
+# From last non-leaf to root:
+for i in range(n // 2 - 1, -1, -1):
+    sift_down(arr, i, n)</pre>
+        <div class="callout callout-green" style="margin-top:10px;font-size:0.87rem;">Python&rsquo;s <code>heapq.heapify()</code> uses exactly this method.</div>
+      </div>
+    </div>
+    <div class="callout callout-blue" style="margin-top:16px;font-size:0.88rem;">
+      <strong>Why is Floyd&rsquo;s method O(N)?</strong>
+      Approximately half of the nodes in a complete binary tree are leaves that require no sifting. Only a small number of nodes exist near the root where the most work is done.
+      When the total work across all levels is summed, it converges to O(N) &mdash; proven using geometric series analysis.
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div id="deck-controls">
+  <button id="btn-prev" onclick="changeSlide(-1)">&#8592; Previous</button>
+  <span id="slide-counter">1 / 12</span>
+  <button id="btn-next" onclick="changeSlide(1)">Next &#8594;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  function showSlide(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    document.getElementById('slide-counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('btn-prev').disabled = current === 0;
+    document.getElementById('btn-next').disabled = current === total - 1;
+  }
+  function changeSlide(dir) { showSlide(current + dir); }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+  showSlide(0);
+</script>
+</body>
+</html>
