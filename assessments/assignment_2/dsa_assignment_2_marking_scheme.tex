@@ -1,0 +1,913 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\geometry{margin=1in}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.96,0.96,0.96}
+\definecolor{primary}{rgb}{0.12, 0.29, 0.49}
+\definecolor{markgreen}{rgb}{0.0, 0.45, 0.18}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdftitle={DSA Assignment 2 Marking Scheme - Accra Technical University},
+}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolor},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{primary}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4
+}
+\lstset{style=mystyle}
+
+% Convenience environment for mark allocation boxes
+\newenvironment{markbox}[1]{%
+    \begin{tcolorbox}[colback=markgreen!6!white, colframe=markgreen, title=\textbf{Mark Allocation --- #1}]
+}{%
+    \end{tcolorbox}
+}
+
+\begin{document}
+
+\begin{center}
+    \includegraphics[width=2.2cm]{logo.png} \\
+    \vspace{0.25cm}
+    {\large \textbf{ACCRA TECHNICAL UNIVERSITY, GHANA}} \\
+    \vspace{0.15cm}
+    {\large \textbf{FACULTY OF APPLIED SCIENCES}} \\
+    \vspace{0.15cm}
+    {\large \textbf{DEPARTMENT OF COMPUTER SCIENCE}} \\
+    \vspace{0.15cm}
+    {\large \textbf{BTECH COMPUTER SCIENCE --- YEAR II}} \\
+    \vspace{0.15cm}
+    {\large \textbf{COURSEWORK ASSIGNMENT 2 --- SOLUTIONS \& MARKING SCHEME}} \\
+    \vspace{0.3cm}
+    {\Large \textbf{BCP 210: DATA STRUCTURES AND ALGORITHMS I}} \\
+    \vspace{0.15cm}
+    {\large \textbf{ACADEMIC YEAR: 2025/2026}} \\
+    \vspace{0.4cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+\noindent
+\textbf{Note for Examiners:} This document contains official model solutions, sample outputs, and point-by-point mark allocations for BCP 210 Coursework Assignment 2. Do not distribute to students before the submission deadline.
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.5cm}
+
+% =========================================================
+% PART A SOLUTIONS
+% =========================================================
+\section{Part A: Algorithmic Complexity Analysis --- Solutions (20 Marks)}
+
+% ---- A1 ----
+\subsection*{A1. Worst-Case Time Complexity of \texttt{algorithm\_x} (4 Marks)}
+
+\subsubsection*{Model Answer}
+\texttt{algorithm\_x} contains two nested \texttt{for} loops. The outer loop runs $N$ iterations. For each iteration $i$, the inner loop runs from $i$ to $N-1$, executing approximately $N - i$ iterations. The total number of comparisons is:
+\[
+\sum_{i=0}^{N-1}(N - i) = N + (N-1) + \cdots + 1 = \frac{N(N+1)}{2} = O(N^2)
+\]
+The dominant cost is the nested comparison inside both loops.
+
+\textbf{Worst-Case Time Complexity: $O(N^2)$} \\
+\textbf{Space Complexity: $O(1)$} (no auxiliary data structure is used).
+
+\begin{markbox}{A1 --- 4 Marks}
+\begin{itemize}
+    \item Correctly identifies the two nested loops as the source of $O(N^2)$: \textbf{2 Marks}
+    \item States space complexity as $O(1)$ with justification: \textbf{1 Mark}
+    \item Clear mathematical or verbal justification of the loop iteration count: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+% ---- A2 ----
+\subsection*{A2. Worst-Case Time Complexity of \texttt{algorithm\_y} (4 Marks)}
+
+\subsubsection*{Model Answer}
+\texttt{algorithm\_y} performs a single pass through the array of size $N$. At each step, it performs a dictionary lookup (\texttt{complement in seen}) and a dictionary insertion (\texttt{seen[val] = i}). Both operations run in $O(1)$ average time for a hash table (Python \texttt{dict}).
+
+\textbf{Worst-Case Time Complexity: $O(N)$} \\
+\textbf{Space Complexity: $O(N)$} --- in the worst case (no pair found), every element is stored in the \texttt{seen} dictionary.
+
+The data structure that makes it faster than \texttt{algorithm\_x} is the \textbf{hash table (dictionary)}. It allows constant-time complement lookups, converting the $O(N^2)$ search into a single $O(N)$ pass. The trade-off is that additional $O(N)$ memory is required.
+
+\begin{markbox}{A2 --- 4 Marks}
+\begin{itemize}
+    \item Correctly states $O(N)$ time and identifies hash table as the enabling structure: \textbf{2 Marks}
+    \item Correctly states $O(N)$ space and identifies the trade-off: \textbf{1 Mark}
+    \item Explains why dictionary lookup is $O(1)$: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% ---- A3 ----
+\subsection*{A3. Identifying and Analysing \texttt{algorithm\_z} (4 Marks)}
+
+\subsubsection*{Model Answer}
+\texttt{algorithm\_z} is \textbf{Insertion Sort}.
+
+\begin{itemize}
+    \item \textbf{Best Case: $O(N)$} --- occurs when the input array is already sorted. The inner \texttt{while} loop condition (\texttt{records[j] > key}) is immediately false for every element, so the inner loop executes zero iterations per outer loop pass. Only $N-1$ comparisons are made.
+    \item \textbf{Worst Case: $O(N^2)$} --- occurs when the input array is sorted in \textbf{descending (reverse) order}. Every element must be shifted all the way to the front. The inner loop executes $i$ iterations for each outer loop step $i$, giving $1 + 2 + \cdots + (N-1) = O(N^2)$ total shifts.
+\end{itemize}
+
+\begin{markbox}{A3 --- 4 Marks}
+\begin{itemize}
+    \item Correctly names the algorithm as Insertion Sort: \textbf{1 Mark}
+    \item Correct best-case $O(N)$ with correct arrangement (already sorted): \textbf{1.5 Marks}
+    \item Correct worst-case $O(N^2)$ with correct arrangement (reverse sorted): \textbf{1.5 Marks}
+\end{itemize}
+\end{markbox}
+
+% ---- A4 ----
+\subsection*{A4. Complexity Comparison Table (4 Marks)}
+
+\subsubsection*{Model Answer}
+
+\begin{center}
+\begin{tabular}{lccc}
+    \toprule
+    \textbf{Complexity} & \textbf{Approx.\ Operations at $N = 10^6$} & \textbf{Rank} \\
+    \midrule
+    $O(1)$        & $1$                       & 1 (fastest) \\
+    $O(\log N)$   & $\approx 20$              & 2 \\
+    $O(N)$        & $1{,}000{,}000$           & 3 \\
+    $O(N \log N)$ & $\approx 20{,}000{,}000$  & 4 \\
+    $O(N^2)$      & $10^{12}$                 & 5 (slowest) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{markbox}{A4 --- 4 Marks}
+\begin{itemize}
+    \item Award \textbf{0.5 Marks} per correct operations value (2.5 marks total for all five).
+    \item Award \textbf{0.3 Marks} per correct rank (1.5 marks total for correct ordering).
+    \item Minor rounding differences in $O(\log N)$ and $O(N \log N)$ values are acceptable.
+\end{itemize}
+\end{markbox}
+
+% ---- A5 ----
+\subsection*{A5. Exponential Fibonacci and Memoisation (4 Marks)}
+
+\subsubsection*{Model Answer}
+Without caching, each call to $f(n)$ spawns two sub-calls: $f(n-1)$ and $f(n-2)$. This creates a binary recursion tree with $2^N$ nodes in the worst case because sub-problems are recomputed repeatedly (e.g., $f(3)$ is computed many times independently). The tree height is $N$ and at each level the number of nodes roughly doubles.
+
+To reduce to $O(N)$ time: replace recursion with a simple iterative loop that tracks only the previous two values, eliminating all recomputation:
+\begin{lstlisting}[language=Python]
+def fibonacci(n):
+    if n <= 1:
+        return n
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
+\end{lstlisting}
+This uses $O(1)$ space (only two variables) and $O(N)$ time (a single loop).
+
+\begin{markbox}{A5 --- 4 Marks}
+\begin{itemize}
+    \item Correct explanation of the binary recursion tree causing repeated sub-problems: \textbf{2 Marks}
+    \item Correct iterative solution achieving $O(N)$ time: \textbf{1 Mark}
+    \item States $O(1)$ space and explains why (only two variables): \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% =========================================================
+% PART B SOLUTIONS
+% =========================================================
+\section{Part B: Arrays and the Two-Pointer Technique --- Solutions (20 Marks)}
+
+% ---- B1 ----
+\subsection*{B1. Binary Search (5 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+\end{lstlisting}
+
+\begin{itemize}
+    \item \textbf{Best Case: $O(1)$} --- the target is the middle element on the first comparison.
+    \item \textbf{Worst Case: $O(\log N)$} --- the target is not present or is at an extreme end; the search space is halved $\log_2 N$ times until \texttt{left > right}.
+\end{itemize}
+
+\begin{markbox}{B1 --- 5 Marks}
+\begin{itemize}
+    \item Correct \texttt{while left <= right} loop and pointer update logic: \textbf{2 Marks}
+    \item Correct mid-point calculation and three-way branch: \textbf{1 Mark}
+    \item Returns \texttt{-1} on failure: \textbf{0.5 Marks}
+    \item Correct best-case $O(1)$ and worst-case $O(\log N)$ with explanations: \textbf{1.5 Marks}
+\end{itemize}
+\end{markbox}
+
+% ---- B2 ----
+\subsection*{B2. Find Pair with Target Sum --- Two-Pointer (6 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def find_pair_with_sum(arr, target):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        current_sum = arr[left] + arr[right]
+        if current_sum == target:
+            return (arr[left], arr[right])
+        elif current_sum < target:
+            left += 1    # sum is too small; move left pointer right
+        else:
+            right -= 1   # sum is too large; move right pointer left
+    return None
+\end{lstlisting}
+
+\textbf{Demonstration:} \texttt{find\_pair\_with\_sum(catalogue, 13)}
+\begin{itemize}
+    \item \texttt{left=0} ($-8$), \texttt{right=9} ($21$): sum $= 13$ \checkmark
+    \item Returns \texttt{(-8, 21)}.
+\end{itemize}
+
+\textbf{Time Complexity:} $O(N)$ --- each pointer moves at most $N$ steps total. \\
+\textbf{Space Complexity:} $O(1)$ --- only two index variables are used.
+
+\begin{markbox}{B2 --- 6 Marks}
+\begin{itemize}
+    \item Correct two-pointer initialisation (\texttt{left=0}, \texttt{right=len-1}): \textbf{1 Mark}
+    \item Correct three-way branch (equal / too small / too large): \textbf{2 Marks}
+    \item Returns \texttt{None} correctly when no pair exists: \textbf{1 Mark}
+    \item Correct demonstration with \texttt{target=13} showing \texttt{(-8, 21)}: \textbf{1 Mark}
+    \item Correct $O(N)$ time and $O(1)$ space stated: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% ---- B3 ----
+\subsection*{B3. In-Place Array Rotation (5 Marks)}
+
+\subsubsection*{Model Implementation (Triple Reversal)}
+\begin{lstlisting}[language=Python]
+def rotate_array(arr, k):
+    n = len(arr)
+    k = k % n   # handle k > n gracefully
+
+    def reverse(lo, hi):
+        while lo < hi:
+            arr[lo], arr[hi] = arr[hi], arr[lo]
+            lo += 1
+            hi -= 1
+
+    reverse(0, n - 1)       # Step 1: reverse entire array
+    reverse(0, k - 1)       # Step 2: reverse first k elements
+    reverse(k, n - 1)       # Step 3: reverse remaining elements
+
+# Demonstration:
+arr = [1, 2, 3, 4, 5]
+rotate_array(arr, 2)
+# arr is now: [4, 5, 1, 2, 3]  (right rotation by 2)
+\end{lstlisting}
+
+\textbf{Time Complexity:} $O(N)$ --- each reversal is $O(N)$ and three reversals are performed. \\
+\textbf{Space Complexity:} $O(1)$ --- all swaps are done in-place with no extra array.
+
+\begin{markbox}{B3 --- 5 Marks}
+\begin{itemize}
+    \item Correct \texttt{k \% n} modular adjustment: \textbf{0.5 Marks}
+    \item Correct three-step reversal logic in the right order: \textbf{2.5 Marks}
+    \item Correct in-place swap using tuple assignment: \textbf{1 Mark}
+    \item Correct $O(N)$ time and $O(1)$ space stated: \textbf{1 Mark}
+\end{itemize}
+\textit{Note for Examiners: Full marks may also be awarded for a correct slicing approach such as \texttt{arr[:] = arr[-k:] + arr[:-k]}, provided the student acknowledges this creates a temporary $O(N)$ copy and thus does not technically satisfy the $O(1)$ space constraint.}
+\end{markbox}
+
+% ---- B4 ----
+\subsection*{B4. Amortised $O(1)$ Append (4 Marks)}
+
+\subsubsection*{Model Answer}
+When a Python list's internal capacity is full, a new array of approximately double the size is allocated and all existing elements are copied over. This single copy operation costs $O(N)$. However, this costly resize happens very rarely --- only after $N$ cheap appends. When the total cost is averaged (amortised) over all $N$ operations:
+\[
+\text{Amortised cost} = \frac{\text{Total work for } N \text{ appends}}{N} = \frac{O(N)}{N} = O(1)
+\]
+The key insight is that because the capacity doubles each time (geometric growth), the number of resize events is $O(\log N)$ over $N$ appends, making the cost per append effectively constant in the long run.
+
+\begin{markbox}{B4 --- 4 Marks}
+\begin{itemize}
+    \item Correctly describes capacity doubling and the copy trigger: \textbf{1.5 Marks}
+    \item Correct explanation of amortisation (spreading the one-time cost over many operations): \textbf{1.5 Marks}
+    \item Notes that geometric growth ($\times 2$) is what makes the average constant: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% =========================================================
+% PART C SOLUTIONS
+% =========================================================
+\section{Part C: Linked Lists, Stacks, and Queues --- Solutions (25 Marks)}
+
+\subsection*{C1. Booking Node and ShuttleList (3 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+class Booking:
+    def __init__(self, booking_id, student_name, destination):
+        self.booking_id   = booking_id
+        self.student_name = student_name
+        self.destination  = destination
+        self.next = None
+        self.prev = None
+
+class ShuttleList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+\end{lstlisting}
+
+\begin{markbox}{C1 --- 3 Marks}
+\begin{itemize}
+    \item \texttt{Booking} node with all five fields (\texttt{booking\_id}, \texttt{student\_name}, \texttt{destination}, \texttt{next}, \texttt{prev}): \textbf{2 Marks}
+    \item \texttt{ShuttleList.\_\_init\_\_} with both \texttt{head} and \texttt{tail} initialised to \texttt{None}: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{C2. \texttt{add\_booking} (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def add_booking(self, booking_id, student_name, destination):
+    new_node = Booking(booking_id, student_name, destination)
+    if self.tail is None:          # empty list
+        self.head = new_node
+        self.tail = new_node
+    else:
+        new_node.prev = self.tail  # link backward
+        self.tail.next = new_node  # link forward
+        self.tail = new_node       # advance tail
+\end{lstlisting}
+
+\textbf{With a \texttt{tail} pointer:} $O(1)$ --- no traversal is needed; the new node is linked directly to \texttt{tail}. \\
+\textbf{Without a \texttt{tail} pointer:} $O(N)$ --- the list must be traversed from \texttt{head} to find the last node before every append.
+
+\begin{markbox}{C2 --- 4 Marks}
+\begin{itemize}
+    \item Correct handling of the empty list case (sets both \texttt{head} and \texttt{tail}): \textbf{1 Mark}
+    \item Correctly sets \texttt{new\_node.prev} and \texttt{self.tail.next}: \textbf{1.5 Marks}
+    \item Advances \texttt{self.tail} to the new node: \textbf{0.5 Marks}
+    \item Correct complexities ($O(1)$ with tail, $O(N)$ without) with explanation: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+\subsection*{C3. \texttt{cancel\_booking} (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def cancel_booking(self, booking_id):
+    current = self.head
+    while current:
+        if current.booking_id == booking_id:
+            # Fix the backward link of the successor
+            if current.next:
+                current.next.prev = current.prev
+            else:
+                self.tail = current.prev    # deleted the tail
+
+            # Fix the forward link of the predecessor
+            if current.prev:
+                current.prev.next = current.next
+            else:
+                self.head = current.next    # deleted the head
+
+            return True   # found and deleted
+        current = current.next
+    return False           # not found
+\end{lstlisting}
+
+\begin{markbox}{C3 --- 4 Marks}
+\begin{itemize}
+    \item Correct \texttt{prev} re-link when deleting a non-tail node: \textbf{1 Mark}
+    \item Correct \texttt{self.tail} update when deleting the tail node: \textbf{1 Mark}
+    \item Correct \texttt{self.head} update when deleting the head node: \textbf{1 Mark}
+    \item Returns \texttt{True}/\texttt{False} correctly; traversal is correct: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{C4. \texttt{find\_and\_swap} (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def find_and_swap(self, id1, id2):
+    node1, node2 = None, None
+    current = self.head
+    while current:
+        if current.booking_id == id1:
+            node1 = current
+        if current.booking_id == id2:
+            node2 = current
+        current = current.next
+
+    if not node1 or not node2:
+        return False   # one or both IDs not found
+
+    # Swap data fields without touching any pointers
+    node1.booking_id,   node2.booking_id   = node2.booking_id,   node1.booking_id
+    node1.student_name, node2.student_name = node2.student_name, node1.student_name
+    node1.destination,  node2.destination  = node2.destination,  node1.destination
+    return True
+\end{lstlisting}
+
+\textbf{Time Complexity:} $O(N)$ --- a single traversal to locate both nodes. \\
+\textbf{Why swap data?} Swapping data is simpler and less error-prone than relinking pointers, especially in a doubly linked list where both \texttt{prev} and \texttt{next} links must be updated for multiple surrounding nodes. Data swapping has no impact on the list's structural links.
+
+\begin{markbox}{C4 --- 4 Marks}
+\begin{itemize}
+    \item Single traversal correctly locates both nodes: \textbf{1.5 Marks}
+    \item All three data fields swapped correctly: \textbf{1.5 Marks}
+    \item $O(N)$ time stated; explanation of why data-swap is preferred: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+\subsection*{C5. \texttt{RouteHistory} Stack (5 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+class RouteHistory:
+    def __init__(self):
+        self._stack = []
+
+    def push(self, change):
+        """Record a new route change.  O(1) amortised."""
+        self._stack.append(change)
+
+    def pop_undo(self):
+        """Undo and return the most recent change.  O(1)."""
+        if not self._stack:
+            return None
+        return self._stack.pop()
+
+    def peek(self):
+        """View the most recent change without removing it.  O(1)."""
+        if not self._stack:
+            return None
+        return self._stack[-1]
+\end{lstlisting}
+
+\textbf{Time Complexities:}
+\begin{itemize}
+    \item \texttt{push}: $O(1)$ amortised (Python list append).
+    \item \texttt{pop\_undo}: $O(1)$ (Python list pop from end).
+    \item \texttt{peek}: $O(1)$ (index access to last element).
+\end{itemize}
+
+\begin{markbox}{C5 --- 5 Marks}
+\begin{itemize}
+    \item \texttt{push} using \texttt{append}: \textbf{1 Mark}
+    \item \texttt{pop\_undo} with empty-list guard, using \texttt{pop()}: \textbf{1.5 Marks}
+    \item \texttt{peek} with empty-list guard, using \texttt{[-1]}: \textbf{1.5 Marks}
+    \item Correct time complexities for all three methods: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{C6. \texttt{BoardingQueue} and \texttt{deque} Justification (5 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+from collections import deque
+
+class BoardingQueue:
+    def __init__(self):
+        self._queue = deque()
+
+    def join(self, student_name):
+        """Student joins the back of the queue.  O(1)."""
+        self._queue.append(student_name)
+
+    def board(self):
+        """Next student boards (leaves the front).  O(1)."""
+        if not self._queue:
+            return None
+        return self._queue.popleft()
+
+    def peek_next(self):
+        """View next student without removing them.  O(1)."""
+        if not self._queue:
+            return None
+        return self._queue[0]
+
+    def size(self):
+        """Number of students in the queue.  O(1)."""
+        return len(self._queue)
+\end{lstlisting}
+
+\textbf{Why \texttt{deque} over \texttt{list} for a queue?} \\
+Removing the first element from a Python \texttt{list} (\texttt{list.pop(0)}) takes $O(N)$ time because every remaining element must be shifted one position forward. A \texttt{collections.deque} is implemented as a doubly-ended linked structure that supports both \texttt{append} (right) and \texttt{popleft} (left) in $O(1)$ time, making it the correct choice for a FIFO queue.
+
+\begin{markbox}{C6 --- 5 Marks}
+\begin{itemize}
+    \item \texttt{join} using \texttt{deque.append}: \textbf{1 Mark}
+    \item \texttt{board} using \texttt{deque.popleft} with empty guard: \textbf{1.5 Marks}
+    \item \texttt{peek\_next} and \texttt{size} correct: \textbf{1 Mark}
+    \item Clear explanation of $O(N)$ vs $O(1)$ for deque vs list front-removal: \textbf{1.5 Marks}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% =========================================================
+% PART D SOLUTIONS
+% =========================================================
+\section{Part D: Hash Tables and Binary Search Trees --- Solutions (25 Marks)}
+
+\subsection*{D1. Hash Collision Explanation (3 Marks)}
+
+\subsubsection*{Model Answer}
+A \textbf{hash collision} occurs when two different keys produce the same index after the hash function and modulo operation are applied (e.g., \texttt{hash("apple") \% 10 == hash("cherry") \% 10 == 7}). Since the underlying array has only one slot at each index, a strategy is needed to handle multiple keys competing for the same position.
+
+\textbf{Resolution Strategies:}
+\begin{enumerate}
+    \item \textbf{Chaining (Open Hashing):} Each array slot holds a linked list of all key-value pairs whose keys hash to that index. Lookup walks the chain. If all $N$ keys hash to the same index (poor hash function), the chain degrades to a single linked list with $O(N)$ lookup.
+    \item \textbf{Open Addressing (Linear Probing):} All entries are stored directly in the array. On collision at index $i$, the algorithm probes $i+1$, $i+2$, \ldots\ until an empty slot is found. Lookup follows the same probe sequence. In the worst case (table nearly full), this also degrades to $O(N)$.
+\end{enumerate}
+
+\begin{markbox}{D1 --- 3 Marks}
+\begin{itemize}
+    \item Correct definition of collision: \textbf{1 Mark}
+    \item Correct description of Chaining with worst-case $O(N)$: \textbf{1 Mark}
+    \item Correct description of Open Addressing / Linear Probing with worst-case $O(N)$: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{D2. \texttt{grade\_frequency\_report} (5 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def grade_frequency_report(results):
+    # Initialise all grade keys to 0
+    freq = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0}
+    for student_id, grade in results:
+        if grade in freq:
+            freq[grade] += 1
+    return freq
+
+# Demonstration
+results = [
+    (1001, 'A'), (1002, 'B'), (1003, 'A'), (1004, 'C'),
+    (1005, 'B'), (1006, 'A'), (1007, 'F'), (1008, 'B'),
+    (1009, 'C'), (1010, 'A'),
+]
+print(grade_frequency_report(results))
+# Output: {'A': 4, 'B': 3, 'C': 2, 'D': 0, 'F': 1}
+\end{lstlisting}
+
+\textbf{Time Complexity: $O(N)$} --- a single pass over the results list. \\
+\textbf{Space Complexity: $O(1)$} --- the output dictionary has a fixed size of 5 keys regardless of $N$.
+
+\begin{markbox}{D2 --- 5 Marks}
+\begin{itemize}
+    \item Initialises all five grade keys (including \texttt{'D': 0}): \textbf{1.5 Marks}
+    \item Correct single-pass frequency counting: \textbf{2 Marks}
+    \item Produces correct expected output: \textbf{1 Mark}
+    \item States $O(N)$ time complexity: \textbf{0.5 Marks}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+\subsection*{D3. \texttt{find\_students\_with\_grade} (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def find_students_with_grade(results, grade):
+    matching = [sid for sid, g in results if g == grade]
+    return sorted(matching)    # O(K log K) where K <= N
+\end{lstlisting}
+
+\textbf{Time Complexity: $O(N \log N)$} \\
+Although the filter scan is $O(N)$, the \texttt{sorted()} call on up to $N$ matching student IDs costs $O(N \log N)$ in the worst case. The hash table grouping is $O(N)$, but the sort dominates, so the overall complexity is $O(N \log N)$.
+
+\begin{markbox}{D3 --- 4 Marks}
+\begin{itemize}
+    \item Correct filtering of matching student IDs: \textbf{1.5 Marks}
+    \item Returns a sorted list: \textbf{1 Mark}
+    \item Correctly states $O(N \log N)$ and identifies \texttt{sorted()} as the dominant cost: \textbf{1.5 Marks}
+\end{itemize}
+\end{markbox}
+
+\subsection*{D4. BST Insertion and Tree Structure (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def insert(root, student_id, grade_score):
+    if root is None:
+        return BSTNode(student_id, grade_score)
+    if grade_score < root.grade_score:
+        root.left  = insert(root.left,  student_id, grade_score)
+    elif grade_score > root.grade_score:
+        root.right = insert(root.right, student_id, grade_score)
+    # If grade_score == root.grade_score, we ignore duplicates
+    return root
+\end{lstlisting}
+
+\textbf{Resulting tree after inserting} $(1001,72), (1002,55), (1003,88), (1004,60), (1005,95), (1006,48)$:
+
+\begin{verbatim}
+              72 (1001)
+             /         \
+         55 (1002)    88 (1003)
+         /    \            \
+     48 (1006) 60 (1004)  95 (1005)
+\end{verbatim}
+
+\begin{markbox}{D4 --- 4 Marks}
+\begin{itemize}
+    \item Correct base case (\texttt{root is None}): \textbf{1 Mark}
+    \item Correct recursive left/right dispatch on \texttt{grade\_score}: \textbf{1.5 Marks}
+    \item Correct tree diagram matching the six insertions: \textbf{1.5 Marks}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+\subsection*{D5. In-Order Traversal as a Generator (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def inorder_traversal(root):
+    if root is None:
+        return
+    yield from inorder_traversal(root.left)
+    yield (root.grade_score, root.student_id)
+    yield from inorder_traversal(root.right)
+
+# Expected output for the tree built in D4:
+# (48, 1006), (55, 1002), (60, 1004), (72, 1001), (88, 1003), (95, 1005)
+\end{lstlisting}
+
+\textbf{Why does in-order traversal produce sorted output?} \\
+By the BST property, every node in a node's left subtree has a smaller key, and every node in the right subtree has a larger key. Visiting left subtree $\rightarrow$ root $\rightarrow$ right subtree recursively enforces this ordering at every level, producing a globally ascending sequence.
+
+\begin{markbox}{D5 --- 4 Marks}
+\begin{itemize}
+    \item Correct recursive structure (\texttt{left} $\to$ \texttt{root} $\to$ \texttt{right}): \textbf{1.5 Marks}
+    \item Correct use of \texttt{yield} / \texttt{yield from}: \textbf{1 Mark}
+    \item Correct expected output sequence: \textbf{0.5 Marks}
+    \item Clear explanation linking BST property to sorted output: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{D6. \texttt{search} and \texttt{find\_range} (5 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def search(root, grade_score):
+    if root is None:
+        return None                       # not found
+    if grade_score == root.grade_score:
+        return root.student_id            # found
+    elif grade_score < root.grade_score:
+        return search(root.left, grade_score)
+    else:
+        return search(root.right, grade_score)
+
+
+def find_range(root, low, high):
+    results = []
+    def _dfs(node):
+        if node is None:
+            return
+        if low < node.grade_score:        # prune: left subtree may have values >= low
+            _dfs(node.left)
+        if low <= node.grade_score <= high:
+            results.append(node.student_id)
+        if node.grade_score < high:       # prune: right subtree may have values <= high
+            _dfs(node.right)
+    _dfs(root)
+    return results                        # already in ascending order via in-order pruning
+\end{lstlisting}
+
+\textbf{Time Complexities:}
+\begin{itemize}
+    \item \texttt{search}: $O(H)$ where $H$ is the height of the BST. In the best case (balanced tree), $H = O(\log N)$. In the worst case (completely skewed / sorted insertion), $H = O(N)$.
+    \item \texttt{find\_range}: $O(H + K)$ where $K$ is the number of nodes within the range. The pruning avoids visiting subtrees that cannot contain values in $[low, high]$.
+\end{itemize}
+
+\textbf{When $H = O(\log N)$ vs $H = O(N)$:}
+\begin{itemize}
+    \item $H = O(\log N)$: The tree is balanced --- nodes are distributed evenly between left and right subtrees at each level (e.g., AVL tree or random insertion order).
+    \item $H = O(N)$: The tree is fully skewed --- elements were inserted in already-sorted (ascending or descending) order, producing a straight chain equivalent to a linked list.
+\end{itemize}
+
+\begin{markbox}{D6 --- 5 Marks}
+\begin{itemize}
+    \item Correct recursive \texttt{search} with three-way branch and \texttt{None} base case: \textbf{2 Marks}
+    \item Correct \texttt{find\_range} with BST pruning (avoids visiting out-of-range subtrees): \textbf{2 Marks}
+    \item Correct explanation of $O(\log N)$ vs $O(N)$ height with concrete examples: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+% =========================================================
+% PART E SOLUTIONS
+% =========================================================
+\section{Part E: Bonus Challenge --- Solutions (10 Marks)}
+
+\subsection*{E1. \texttt{build\_conflict\_map} (4 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def build_conflict_map(sessions):
+    # Group session indices by room_id using a hash table
+    room_to_indices = {}
+    for i, (room_id, start, end) in enumerate(sessions):
+        if room_id not in room_to_indices:
+            room_to_indices[room_id] = []
+        room_to_indices[room_id].append(i)
+
+    conflict_map = {}
+    for room_id, indices in room_to_indices.items():
+        conflicts = []
+        for a in range(len(indices)):
+            for b in range(a + 1, len(indices)):
+                i, j = indices[a], indices[b]
+                # Sessions i and j conflict if j starts before i ends
+                if sessions[j][1] < sessions[i][2]:
+                    conflicts.append((i, j))
+        conflict_map[room_id] = conflicts
+
+    return conflict_map
+
+# Expected output for sample data:
+# {'R1': [(0, 1)], 'R2': [(3, 4)]}
+\end{lstlisting}
+
+\begin{markbox}{E1 --- 4 Marks}
+\begin{itemize}
+    \item Correctly groups session indices by \texttt{room\_id} into a hash table: \textbf{1.5 Marks}
+    \item Correct pairwise conflict check condition (\texttt{start[j] < end[i]}): \textbf{1.5 Marks}
+    \item Produces correct output for sample data: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\subsection*{E2. \texttt{detect\_first\_conflict} Using a Stack (3 Marks)}
+
+\subsubsection*{Model Implementation}
+\begin{lstlisting}[language=Python]
+def detect_first_conflict(room_sessions):
+    """
+    room_sessions: list of (index, start, end) tuples, sorted by start time.
+    Returns the first conflicting pair of indices, or None.
+    """
+    stack = []   # each entry is (index, start, end)
+    for entry in room_sessions:
+        idx, start, end = entry
+        if stack and start < stack[-1][2]:   # start of current < end of top
+            return (stack[-1][0], idx)        # conflict detected
+        stack.append(entry)
+    return None
+\end{lstlisting}
+
+\textbf{How the Stack is used:} The stack always holds sessions in progress (those that have started but not yet ended). When a new session starts before the top-of-stack session ends, a conflict is detected immediately and the pair is returned.
+
+\begin{markbox}{E2 --- 3 Marks}
+\begin{itemize}
+    \item Correct use of \texttt{stack[-1]} (top of stack) for the active session: \textbf{1 Mark}
+    \item Correct conflict condition (\texttt{start < stack[-1][2]}): \textbf{1 Mark}
+    \item Returns first conflicting pair correctly; returns \texttt{None} when no conflict: \textbf{1 Mark}
+\end{itemize}
+\end{markbox}
+
+\newpage
+
+\subsection*{E3. Complexity Analysis and Alternative Approaches (3 Marks)}
+
+\subsubsection*{Model Answer}
+\textbf{Complexity of the E1 solution:}
+\begin{itemize}
+    \item \textbf{Grouping step:} $O(N)$ --- a single pass over all sessions.
+    \item \textbf{Pairwise comparison per room:} $O(M^2)$ for a room with $M$ sessions, $O(N^2)$ in the worst case if all sessions are in one room.
+    \item \textbf{Space Complexity:} $O(N)$ for the grouping hash table and results.
+\end{itemize}
+
+\textbf{Would a BST or sorted array with binary search improve performance?} \\
+Yes. If sessions within each room are sorted by \texttt{start\_time}, we can use the following approach:
+\begin{itemize}
+    \item Sort the sessions per room by \texttt{start\_time}: $O(M \log M)$.
+    \item After sorting, a single linear scan is sufficient: maintain only the maximum \texttt{end\_time} seen so far. If the next session's \texttt{start\_time} is less than the running maximum end time, a conflict exists. This reduces pairwise detection from $O(M^2)$ to $O(M)$ after the $O(M \log M)$ sort, yielding an overall $O(N \log N)$ solution.
+    \item A BST keyed on \texttt{start\_time} can achieve the same after $O(M \log M)$ insertions, but offers no asymptotic advantage over a sorted array here since we still need a linear scan of the sorted order.
+\end{itemize}
+
+\begin{markbox}{E3 --- 3 Marks}
+\begin{itemize}
+    \item Correct overall complexity of E1 (grouping $O(N)$, pairwise $O(N^2)$): \textbf{1 Mark}
+    \item Correct description of the sort + linear scan improvement ($O(N \log N)$): \textbf{1.5 Marks}
+    \item Honest comparison of BST vs sorted array for this problem: \textbf{0.5 Marks}
+\end{itemize}
+\end{markbox}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.4cm}
+
+% =========================================================
+% FINAL MARKING SUMMARY
+% =========================================================
+\section*{Final Mark Allocation Summary}
+
+\begin{table}[h!]
+    \centering
+    \caption{Coursework Assignment 2 --- Examiner Mark Sheet}
+    \vspace{0.2cm}
+    \begin{tabular}{llrr}
+        \toprule
+        \textbf{Part} & \textbf{Question} & \textbf{Available} & \textbf{Awarded} \\
+        \midrule
+        A & A1: \texttt{algorithm\_x} complexity           & 4  & \underline{\hspace{1cm}} \\
+        A & A2: \texttt{algorithm\_y} complexity           & 4  & \underline{\hspace{1cm}} \\
+        A & A3: Insertion Sort identification              & 4  & \underline{\hspace{1cm}} \\
+        A & A4: Complexity comparison table                & 4  & \underline{\hspace{1cm}} \\
+        A & A5: Exponential Fibonacci + iterative fix      & 4  & \underline{\hspace{1cm}} \\
+        \midrule
+        B & B1: Binary search                              & 5  & \underline{\hspace{1cm}} \\
+        B & B2: Two-pointer pair sum                       & 6  & \underline{\hspace{1cm}} \\
+        B & B3: In-place array rotation                    & 5  & \underline{\hspace{1cm}} \\
+        B & B4: Amortised $O(1)$ explanation               & 4  & \underline{\hspace{1cm}} \\
+        \midrule
+        C & C1: Booking node + ShuttleList                 & 3  & \underline{\hspace{1cm}} \\
+        C & C2: \texttt{add\_booking}                      & 4  & \underline{\hspace{1cm}} \\
+        C & C3: \texttt{cancel\_booking}                   & 4  & \underline{\hspace{1cm}} \\
+        C & C4: \texttt{find\_and\_swap}                   & 4  & \underline{\hspace{1cm}} \\
+        C & C5: \texttt{RouteHistory} Stack                & 5  & \underline{\hspace{1cm}} \\
+        C & C6: \texttt{BoardingQueue} + deque rationale   & 5  & \underline{\hspace{1cm}} \\
+        \midrule
+        D & D1: Hash collision explanation                 & 3  & \underline{\hspace{1cm}} \\
+        D & D2: \texttt{grade\_frequency\_report}          & 5  & \underline{\hspace{1cm}} \\
+        D & D3: \texttt{find\_students\_with\_grade}       & 4  & \underline{\hspace{1cm}} \\
+        D & D4: BST insertion + tree diagram               & 4  & \underline{\hspace{1cm}} \\
+        D & D5: In-order traversal generator               & 4  & \underline{\hspace{1cm}} \\
+        D & D6: \texttt{search} + \texttt{find\_range}     & 5  & \underline{\hspace{1cm}} \\
+        \midrule
+        E & E1: \texttt{build\_conflict\_map} (Bonus)      & 4  & \underline{\hspace{1cm}} \\
+        E & E2: \texttt{detect\_first\_conflict} (Bonus)   & 3  & \underline{\hspace{1cm}} \\
+        E & E3: Complexity analysis (Bonus)                & 3  & \underline{\hspace{1cm}} \\
+        \midrule
+        \textbf{Total (excl. bonus)} & & \textbf{90} & \underline{\hspace{1cm}} \\
+        \textbf{Bonus}               & & \textbf{10} & \underline{\hspace{1cm}} \\
+        \textbf{Grand Total}         & & \textbf{100} & \underline{\hspace{1cm}} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\vspace{0.4cm}
+\noindent\textbf{General Examiner Notes:}
+\begin{itemize}
+    \item Award partial marks where the approach is fundamentally correct but contains a minor implementation error.
+    \item Do not penalise students twice for the same bug propagating across sub-questions.
+    \item Alternative correct implementations (e.g., iterative instead of recursive BST methods) should receive full marks provided the time and space complexities are correct.
+    \item Complexity analyses that are off by a constant factor (e.g., stating $O(2N)$ instead of $O(N)$) should be treated as correct.
+\end{itemize}
+
+\end{document}

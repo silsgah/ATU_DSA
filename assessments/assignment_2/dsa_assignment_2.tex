@@ -1,0 +1,363 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+% Page geometry
+\geometry{margin=1in}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.96,0.96,0.96}
+\definecolor{primary}{rgb}{0.12, 0.29, 0.49}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=magenta,
+    urlcolor=primary,
+    pdftitle={DSA Assignment 2 - Accra Technical University},
+}
+
+% Code listing settings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolor},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{primary}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\begin{center}
+    \includegraphics[width=2.2cm]{logo.png} \\
+    \vspace{0.25cm}
+    {\large \textbf{ACCRA TECHNICAL UNIVERSITY, GHANA}} \\
+    \vspace{0.15cm}
+    {\large \textbf{FACULTY OF APPLIED SCIENCES}} \\
+    \vspace{0.15cm}
+    {\large \textbf{DEPARTMENT OF COMPUTER SCIENCE}} \\
+    \vspace{0.15cm}
+    {\large \textbf{BTECH COMPUTER SCIENCE --- YEAR II}} \\
+    \vspace{0.15cm}
+    {\large \textbf{COURSEWORK ASSIGNMENT 2}} \\
+    \vspace{0.3cm}
+    {\Large \textbf{BCP 210: DATA STRUCTURES AND ALGORITHMS I}} \\
+    \vspace{0.15cm}
+    {\large \textbf{ACADEMIC YEAR: 2025/2026}} \\
+    \vspace{0.4cm}
+    \hrule
+\end{center}
+
+\vspace{0.2cm}
+\noindent
+\textbf{STUDENT NAME:} \underline{\hspace{6cm}} \hfill \textbf{INDEX NUMBER:} \underline{\hspace{4cm}}
+\vspace{0.4cm}
+\hrule
+\vspace{0.4cm}
+
+\noindent
+\textbf{INSTRUCTIONS TO STUDENTS:}
+\begin{enumerate}
+    \item Answer \textbf{ALL} questions. The assignment is marked out of \textbf{100 marks}.
+    \item Implement all algorithms in Python (version 3.8 or above).
+    \item You may use only Python's standard built-in types (\texttt{list}, \texttt{dict}, \texttt{set}, etc.).
+          \textbf{No external libraries} (e.g., \texttt{numpy}, \texttt{pandas}) are permitted unless explicitly stated.
+    \item \textbf{GitHub Submission Steps:}
+    \begin{enumerate}
+        \item Go to the starter repository: \url{https://github.com/atu-dsa-2025/dsa-assignment-2-template}
+        \item Click the green \textbf{``Use this template''} button $\rightarrow$ select \textbf{``Create a new repository''}.
+        \item Set the repository visibility to \textbf{Private} and name it \texttt{dsa-assignment-2-INDEXNUMBER}.
+        \item Commit and push your Python source files (\texttt{.py}) and a written report (\texttt{.pdf}) to your repository.
+        \item \textbf{Transfer ownership:} When finished, go to \textbf{Settings} $\rightarrow$ \textbf{Danger Zone} $\rightarrow$ \textbf{Transfer ownership} and transfer the repository to the class organisation: \textbf{atu-dsa-2025}.
+    \end{enumerate}
+    \item \textbf{Submission Verification:} Your submission date is verified strictly by the GitHub server push timestamp. Local commit timestamps will not be accepted as proof of on-time submission.
+    \item \textbf{Late Policy:} Submissions pushed after the deadline will incur a penalty of 10\% per 24-hour delay.
+\end{enumerate}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.5cm}
+
+% =========================================================
+% PART A -- ALGORITHMIC COMPLEXITY  (Week 1)
+% =========================================================
+\section{Part A: Algorithmic Complexity Analysis (20 Marks)}
+\subsection*{Topic: Analysing and Comparing Algorithm Efficiency}
+
+\subsubsection*{Background}
+A university exam system uses three candidate algorithms to search for a student's record in a database of $N$ entries.
+
+\begin{lstlisting}[language=Python]
+# Algorithm X
+def algorithm_x(records, target):
+    for i in range(len(records)):
+        for j in range(i, len(records)):
+            if records[i] + records[j] == target:
+                return (i, j)
+    return None
+
+# Algorithm Y
+def algorithm_y(records, target):
+    seen = {}
+    for i, val in enumerate(records):
+        complement = target - val
+        if complement in seen:
+            return (seen[complement], i)
+        seen[val] = i
+    return None
+
+# Algorithm Z
+def algorithm_z(records):
+    n = len(records)
+    for i in range(1, n):
+        key = records[i]
+        j = i - 1
+        while j >= 0 and records[j] > key:
+            records[j + 1] = records[j]
+            j -= 1
+        records[j + 1] = key
+    return records
+\end{lstlisting}
+
+\subsubsection*{Questions}
+\begin{enumerate}[label=\textbf{A\arabic*.}]
+    \item \textbf{(4 Marks)} Determine the \textbf{worst-case time complexity} of \texttt{algorithm\_x} and justify your answer by explaining which part of the code drives the cost.
+
+    \item \textbf{(4 Marks)} Determine the \textbf{worst-case time complexity} of \texttt{algorithm\_y} and explain what data structure makes it faster than \texttt{algorithm\_x}. What is the space trade-off?
+
+    \item \textbf{(4 Marks)} \texttt{algorithm\_z} sorts an array and is well-known for performing well on nearly-sorted inputs. Name this algorithm. State its \textbf{best-case} and \textbf{worst-case} time complexities and explain what input arrangement causes each case.
+
+    \item \textbf{(4 Marks)} The exam system processes $N = 1{,}000{,}000$ student records. Complete the table below with the \textbf{approximate number of operations} for each complexity class at this scale, and rank the algorithms from fastest to slowest.
+
+    \vspace{0.3cm}
+    \begin{center}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Complexity Class} & \textbf{Approx.\ Operations at $N = 10^6$} & \textbf{Rank (1 = fastest)} \\
+        \midrule
+        $O(1)$        & \underline{\hspace{3cm}} & \underline{\hspace{2cm}} \\
+        $O(\log N)$   & \underline{\hspace{3cm}} & \underline{\hspace{2cm}} \\
+        $O(N)$        & \underline{\hspace{3cm}} & \underline{\hspace{2cm}} \\
+        $O(N \log N)$ & \underline{\hspace{3cm}} & \underline{\hspace{2cm}} \\
+        $O(N^2)$      & \underline{\hspace{3cm}} & \underline{\hspace{2cm}} \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \item \textbf{(4 Marks)} A recursive function computes $f(n) = f(n-1) + f(n-2)$ with base cases $f(0) = 0$ and $f(1) = 1$, and no result is cached. Explain why its time complexity is $O(2^N)$ rather than $O(N)$. How would you reduce it to $O(N)$ time and $O(1)$ space?
+\end{enumerate}
+
+\newpage
+
+% =========================================================
+% PART B -- ARRAYS \& TWO-POINTER TECHNIQUE  (Week 2)
+% =========================================================
+\section{Part B: Arrays and the Two-Pointer Technique (20 Marks)}
+\subsection*{Topic: ATU Library Book Management System}
+
+\subsubsection*{Background}
+The ATU library maintains its catalogue as a \textbf{sorted} integer array where each integer encodes a unique \texttt{Book\_ID}. The following sorted array is provided for all questions in this section:
+
+\begin{lstlisting}[language=Python]
+catalogue = [-8, -3, 0, 1, 4, 6, 9, 12, 15, 21]
+\end{lstlisting}
+
+\subsubsection*{Questions}
+\begin{enumerate}[label=\textbf{B\arabic*.}]
+    \item \textbf{(5 Marks)} Implement a function \texttt{binary\_search(arr, target)} that returns the index of \texttt{target} in the sorted array, or $-1$ if it is not found. Your implementation must run in $O(\log N)$ time. State its best-case and worst-case complexities and describe what causes each.
+
+    \item \textbf{(6 Marks)} Implement a function \texttt{find\_pair\_with\_sum(arr, target)} that, using the \textbf{two-pointer technique}, finds two distinct Book IDs in the sorted catalogue whose values sum to a given \texttt{target}. The function should return the pair as a tuple, or \texttt{None} if no such pair exists. It must run in $O(N)$ time and $O(1)$ additional space. Demonstrate your function by finding a pair that sums to $\mathbf{13}$.
+
+    \item \textbf{(5 Marks)} Implement a function \texttt{rotate\_array(arr, k)} that rotates the array to the \textbf{right} by $k$ positions \textbf{in-place} (without creating a copy of the array). For example, rotating \texttt{[1, 2, 3, 4, 5]} by $k = 2$ produces \texttt{[4, 5, 1, 2, 3]}. Your solution must run in $O(N)$ time and $O(1)$ space. (\textit{Hint: consider a triple-reversal approach.})
+
+    \item \textbf{(4 Marks)} Explain what \textbf{amortised $O(1)$} means in the context of appending elements to a Python list. Why does a single append occasionally trigger an $O(N)$ operation, and why is the long-run average still considered constant time?
+\end{enumerate}
+
+\newpage
+
+% =========================================================
+% PART C -- LINKED LISTS \& STACKS/QUEUES  (Weeks 3 \& 4)
+% =========================================================
+\section{Part C: Linked Lists, Stacks, and Queues (25 Marks)}
+\subsection*{Topic: ATU Campus Shuttle Booking System}
+
+\subsubsection*{Background}
+The ATU campus shuttle booking system manages passenger reservations using a \textbf{Doubly Linked List}. Each booking node holds:
+\begin{itemize}
+    \item \texttt{booking\_id} (Integer)
+    \item \texttt{student\_name} (String)
+    \item \texttt{destination} (String)
+    \item \texttt{next} and \texttt{prev} pointers
+\end{itemize}
+
+Additionally, the shuttle dispatch office uses a \textbf{Stack} to track the history of route changes and a \textbf{Queue} to manage the boarding order at each stop.
+
+\subsubsection*{Questions}
+
+\textbf{Section C1: Doubly Linked List (15 Marks)}
+
+\begin{enumerate}[label=\textbf{C\arabic*.}]
+    \item \textbf{(3 Marks)} Implement the \texttt{Booking} node class and the \texttt{ShuttleList} class with an \texttt{\_\_init\_\_} method that maintains both a \texttt{head} and a \texttt{tail} pointer.
+
+    \item \textbf{(4 Marks)} Implement \texttt{add\_booking(booking\_id, student\_name, destination)} which appends a new booking to the \textbf{end} of the doubly linked list. Correctly set both \texttt{next} and \texttt{prev} pointers. State the time complexity of this operation when a \texttt{tail} pointer is maintained, and explain how it would change without one.
+
+    \item \textbf{(4 Marks)} Implement \texttt{cancel\_booking(booking\_id)} which removes a booking node from \textbf{any position} in the list (head, tail, or middle) by adjusting both the \texttt{next} and \texttt{prev} pointers of the surrounding nodes. Your implementation must handle all three cases correctly.
+
+    \item \textbf{(4 Marks)} Implement \texttt{find\_and\_swap(id1, id2)} which locates the two booking nodes with the given IDs and swaps their data (\texttt{booking\_id}, \texttt{student\_name}, \texttt{destination}) \textbf{without} relinking any pointers. State the time complexity of your solution and explain why swapping data is preferred over relinking pointers in this case.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Section C2: Stack and Queue Application (10 Marks)}
+
+\begin{enumerate}[label=\textbf{C\arabic*.}, resume]
+    \item \textbf{(5 Marks)} The dispatch office records every route change as a string (e.g., \texttt{"Route A -> Route B"}) by pushing it onto a Stack. When the office wants to \textbf{undo} the last change, it pops the top. Implement a \texttt{RouteHistory} class backed by a Python list (used as a stack) that supports:
+    \begin{itemize}
+        \item \texttt{push(change)}: Record a new route change.
+        \item \texttt{pop\_undo()}: Undo and return the most recent change. Return \texttt{None} if nothing to undo.
+        \item \texttt{peek()}: View the most recent change without removing it.
+    \end{itemize}
+    State the time complexity of each operation.
+
+    \item \textbf{(5 Marks)} At each shuttle stop, students board in a strict First-Come-First-Served order. Implement a \texttt{BoardingQueue} class using Python's \texttt{collections.deque} that supports:
+    \begin{itemize}
+        \item \texttt{join(student\_name)}: A student joins the back of the queue.
+        \item \texttt{board()}: The next student boards (leaves the front). Return \texttt{None} if the queue is empty.
+        \item \texttt{peek\_next()}: View the next student to board without removing them.
+        \item \texttt{size()}: Return the number of students currently in the queue.
+    \end{itemize}
+    Explain why \texttt{collections.deque} is preferred over a plain Python \texttt{list} for implementing a queue.
+\end{enumerate}
+
+\newpage
+
+% =========================================================
+% PART D -- HASH TABLES \& TREES  (Weeks 5 \& 6)
+% =========================================================
+\section{Part D: Hash Tables and Binary Search Trees (25 Marks)}
+\subsection*{Topic: ATU Student Grade Management Portal}
+
+\subsubsection*{Background}
+The grade management portal stores course results in a \textbf{Hash Table} for fast retrieval. An internal audit requires a BST to be built from the data so that grade reports can be printed in sorted order without re-sorting the entire dataset.
+
+\subsubsection*{Section D1: Hash Tables (12 Marks)}
+
+\begin{enumerate}[label=\textbf{D\arabic*.}]
+    \item \textbf{(3 Marks)} Explain the concept of a \textbf{hash collision}. Describe the two standard resolution strategies (\textbf{Chaining} and \textbf{Open Addressing} / Linear Probing) and state the worst-case time complexity for a lookup under each strategy.
+
+    \item \textbf{(5 Marks)} Implement a function \texttt{grade\_frequency\_report(results)} that takes a list of tuples of the form \texttt{(student\_id, grade\_letter)} and returns a dictionary mapping each grade letter (\texttt{'A'}, \texttt{'B'}, \texttt{'C'}, \texttt{'D'}, \texttt{'F'}) to the number of students who received it. Use the following sample data to demonstrate your function:
+    \begin{lstlisting}[language=Python]
+results = [
+    (1001, 'A'), (1002, 'B'), (1003, 'A'), (1004, 'C'),
+    (1005, 'B'), (1006, 'A'), (1007, 'F'), (1008, 'B'),
+    (1009, 'C'), (1010, 'A'),
+]
+    \end{lstlisting}
+    Expected output: \texttt{\{'A': 4, 'B': 3, 'C': 2, 'D': 0, 'F': 1\}}
+
+    \item \textbf{(4 Marks)} Implement a function \texttt{find\_students\_with\_grade(results, grade)} that returns a \textbf{sorted list} of student IDs for students who received the specified grade. Your solution must run in $O(N \log N)$ time. State why the time complexity is not $O(N)$ despite using a hash table for grouping.
+\end{enumerate}
+
+\vspace{0.5cm}
+\subsubsection*{Section D2: Binary Search Trees (13 Marks)}
+
+The grade portal builds a BST where each node stores a unique \texttt{(student\_id, grade\_score)} pair (an integer 0--100) keyed on \texttt{grade\_score}.
+
+\begin{lstlisting}[language=Python]
+class BSTNode:
+    def __init__(self, student_id, grade_score):
+        self.student_id  = student_id
+        self.grade_score = grade_score
+        self.left  = None
+        self.right = None
+\end{lstlisting}
+
+\begin{enumerate}[label=\textbf{D\arabic*.}, resume]
+    \item \textbf{(4 Marks)} Implement a recursive function \texttt{insert(root, student\_id, grade\_score)} that inserts a new node into the BST following standard BST ordering on \texttt{grade\_score}. Demonstrate by inserting the following records in order: $(1001, 72)$, $(1002, 55)$, $(1003, 88)$, $(1004, 60)$, $(1005, 95)$, $(1006, 48)$. Draw the resulting tree structure.
+
+    \item \textbf{(4 Marks)} Implement \texttt{inorder\_traversal(root)} as a generator function (using \texttt{yield}) that visits nodes in ascending order of \texttt{grade\_score}. Show the output of calling this function on the BST you built in D4. Explain why in-order traversal produces a sorted sequence in a BST.
+
+    \item \textbf{(5 Marks)} Implement \texttt{search(root, grade\_score)} that returns the \texttt{student\_id} of the node matching the given score, or \texttt{None} if not found. Then implement \texttt{find\_range(root, low, high)} that returns a \textbf{list} of all \texttt{student\_id} values whose \texttt{grade\_score} falls within the inclusive range $[\textit{low},\, \textit{high}]$, in ascending order. State the time complexity of each function in terms of $N$ (number of nodes) and $H$ (tree height), and explain when $H = O(\log N)$ versus $H = O(N)$.
+\end{enumerate}
+
+\newpage
+
+% =========================================================
+% PART E -- BONUS CHALLENGE
+% =========================================================
+\section{Bonus Challenge (10 Marks)}
+\subsection*{Integrating Data Structures: Exam Invigilation Scheduler}
+
+\subsubsection*{Background}
+The ATU examinations office must assign invigilators to exam rooms. They have a list of exam sessions, each represented as a tuple \texttt{(room\_id, start\_time, end\_time)} where all times are integers. Two sessions \textbf{conflict} if they share the same \texttt{room\_id} and their time intervals overlap (i.e., one session starts before the other ends).
+
+\subsubsection*{Problem Statement}
+\begin{enumerate}[label=\textbf{E\arabic*.}]
+    \item \textbf{(4 Marks)} Implement \texttt{build\_conflict\_map(sessions)} that returns a dictionary mapping each \texttt{room\_id} to a list of \textbf{all} pairs of conflicting session indices within that room. Two sessions at indices $i$ and $j$ (where $i < j$) conflict if \texttt{start[j] < end[i]}. Use the sample data below:
+    \begin{lstlisting}[language=Python]
+sessions = [
+    ('R1', 8,  10),   # index 0
+    ('R1', 9,  11),   # index 1 -- conflicts with index 0
+    ('R1', 11, 13),   # index 2 -- no conflict with index 1
+    ('R2', 8,  12),   # index 3
+    ('R2', 10, 14),   # index 4 -- conflicts with index 3
+]
+    \end{lstlisting}
+
+    \item \textbf{(3 Marks)} Using a \textbf{Stack}, implement \texttt{detect\_first\_conflict(room\_sessions)} that processes sessions for a \textbf{single room} in order of start time and returns the \textbf{first conflicting pair} of session indices found, or \texttt{None} if no conflict exists.
+
+    \item \textbf{(3 Marks)} Analyse the overall time and space complexity of your full solution to E1. Discuss whether a BST keyed on \texttt{start\_time} or a sorted array with binary search would improve the performance of conflict detection compared to the naive nested-loop approach.
+\end{enumerate}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.4cm}
+
+% =========================================================
+% MARKING SUMMARY TABLE
+% =========================================================
+\section*{Mark Allocation Summary}
+\begin{table}[h!]
+    \centering
+    \caption{Coursework Assignment 2 --- Mark Distribution}
+    \vspace{0.2cm}
+    \begin{tabular}{llr}
+        \toprule
+        \textbf{Part} & \textbf{Topic (Weeks Covered)} & \textbf{Marks} \\
+        \midrule
+        Part A & Algorithmic Complexity Analysis (Week 1)                    & 20 \\
+        Part B & Arrays and Two-Pointer Technique (Week 2)                   & 20 \\
+        Part C & Linked Lists, Stacks, and Queues (Weeks 3 \& 4)             & 25 \\
+        Part D & Hash Tables and Binary Search Trees (Weeks 5 \& 6)          & 25 \\
+        Part E & Bonus: Exam Invigilation Scheduler (Weeks 1--6 integrated)  & 10 \\
+        \midrule
+        \textbf{Total} & & \textbf{100 (+10 bonus)} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{document}
